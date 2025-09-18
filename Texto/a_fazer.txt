@@ -1,0 +1,4 @@
+Saída que escreve um artigo de texto tá feita
+    Mas falta complementar ela com componentes conexas
+
+Distâncias, diâmetro... demais coisas que a lista pede.
