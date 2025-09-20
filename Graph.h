@@ -25,12 +25,20 @@ private:
     int max_dist(const std::vector<int>& dists) const;
 
     /**
-    Retorna um vector<int> resultante com n + 1 entradas. A entrada 0 é -1. resultante[v] é a componente conexa do vértice v (a primeira componente conexa é 0, e assim por diante). Os índices das components conexas não seguem nenhuma ordem em particular.
+    Retorna um vector<int> resultante com n + 1 entradas. A entrada 0 é -1. resultante[v] é a componente conexa do vértice v (a primeira componente conexa é 0, e assim por diante). Os índices das componentes conexas não seguem nenhuma ordem em particular.
 
     Vetores de adjacências: O((n + m))
     Matriz de adjacências: O(n^2) 
     */
     std::vector<int> connected_component_vector() const;
+
+    /**
+    Retorna um vector<vector<int>> resultante indexado em 0 mesmo. resultante[i] é um vector<int> com todos os vértices da i-ésima componente conexa. Os índices das componentes conexas não seguem nenhuma ordem em particular.
+    
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    std::vector<std::vector<int>> connected_components_unsorted() const;
 
 public:
     /**
@@ -114,13 +122,29 @@ public:
     int diameter() const;
 
     /**
-    Retorna um vector<vector<int>> resultante indexado em 0 mesmo. resultante[i] é um vector<int> com todos os vértices da i-ésima componente conexa. As componentes saem em ordem decrescente de tamanho.
+    Retorna uma aproximação a do diâmetro d do grafo usando varredura dupla. d/2 <= a <= d. Se o grafo é uma árvore, a = d. Se o grafo não for conexo, necessariamente retorna -1.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    int approx_diameter() const;
+
+    /**
+    Retorna um vector<vector<int>> resultante indexado em 0 mesmo. resultante[i] é um vector<int> com todos os vértices da i-ésima componente conexa. Os índices das componentes seguem ordem decrescente de tamanho
     
     Seja k a quantidade de componentes conexas.
-    Vetores de adjacências: O((n + m + k log k)) <= O(m + n log n) 
+    Vetores de adjacências: O(n + m + k log k) <= O(m + n log n) 
     Matriz de adjacências: O(n^2) 
     */
     std::vector<std::vector<int>> connected_components() const;
+
+    /**
+    Altera amount, size_largest e size_smallest com informações sobre as componentes conexas.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2) 
+    */
+    void connected_component_info(int& amount, int& size_largest, int& size_smallest) const;
 };
 
 #endif

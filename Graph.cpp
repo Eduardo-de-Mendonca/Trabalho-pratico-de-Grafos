@@ -52,7 +52,22 @@ int Graph::max_dist(const std::vector<int>& dists) const {
     return max;
 }
 
-std::vector<std::vector<int>> Graph::connected_components() const {
+std::vector<int> Graph::connected_component_vector() const {
+    std::vector<int> result(n + 1, -1);
+
+    int i = 1;
+    int marker = 0;
+    for (int i = 1; i <= n; i++) {
+        if (result[i] == -1) {
+            bfs_visited(i, result, marker);
+            marker++;
+        }
+    }
+
+    return result;
+}
+
+std::vector<std::vector<int>> Graph::connected_components_unsorted() const {
     // Pegar as componentes conexas (O(n + m))
     std::vector<int> components = connected_component_vector();
 
@@ -71,8 +86,6 @@ std::vector<std::vector<int>> Graph::connected_components() const {
         }
     }
 
-    // Ordenar com base no tamanho (O(k log k) <= O(n log n)
-    std::sort(result.begin(), result.end(), sort_key);
     return result;
 }
 
@@ -326,17 +339,51 @@ int Graph::diameter() const {
     return max;
 }
 
-std::vector<int> Graph::connected_component_vector() const {
-    std::vector<int> result(n + 1, -1);
+int Graph::approx_diameter() const {
+    std::vector<int> dists;
+    std::vector<int> parents;
+    bfs(1, dists, parents);
 
-    int i = 1;
-    int marker = 0;
-    for (int i = 1; i <= n; i++) {
-        if (result[i] == -1) {
-            bfs_visited(i, result, marker);
-            marker++;
+    int max_v = 0;
+    int max = 0;
+    for (int v = 1; v <= n; v++) {
+        int d = dists[v];
+        if (d == -1 || max_v == 0 || max < d) {
+            max = d;
+            max_v = v;
         }
     }
 
-    return result;
+    if (max == -1) return -1;
+    bfs(max_v, dists, parents);
+    return max_dist(dists);
 }
+
+std::vector<std::vector<int>> Graph::connected_components() const {
+    // Pegar as componentes conexas (O(n + m))
+    std::vector<std::vector<int>> components = connected_components_unsorted();
+
+    // Ordenar com base no tamanho (O(k log k) <= O(n log n)
+    std::sort(components.begin(), components.end(), sort_key);
+    return components;
+}
+
+void Graph::connected_component_info(int& amount, int& size_largest, int& size_smallest) const {
+    // Pegar as componentes conexas (O(n + m))
+    std::vector<std::vector<int>> components = connected_components_unsorted();
+
+    // Percorrer para pegar a informação (O(n))
+    int max = -1;
+    int min = -1;
+    for (int i = 0; i < components.size(); i++) {
+        int c = components[i].size();
+        if (max < c) max = c;
+        if (c < min) min = c;
+    }
+
+    // Alterar os inteiros (O(1))
+    amount = components.size();
+    size_largest = max;
+    size_smallest = min;
+}
+

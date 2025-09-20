@@ -1,7 +1,10 @@
 O enunciado diz:
-    "Sua biblioteca deve ser capaz de representar grafos utilizando tanto uma matriz de adjacˆencia, quanto uma lista ou vetor de adjacˆencia. O usu´ario da biblioteca (programa que ir´a us´a-la) poder´a escolher a representa¸c˜ao a ser utilizada."
+    "Sua biblioteca deve ser capaz de representar grafos utilizando tanto uma matriz de adjacência, quanto uma lista ou vetor de adjacência. O usu´ario da biblioteca (programa que irá usá-la) poderá escolher a representa¸c˜ao a ser utilizada."
 
     Isso significa que precisamos ter 2 possíveis representações: matriz de adjacência e vetor de adjacência, correto?
     
     Ou seriam 3: matriz de adjacência, lista de adjacência e vetor de adjacência?
         Se for isso, então eu não sei a diferença entre os últimos dois.
+
+Precisa medir tempo para todos os itens do estudo de caso?
+    Ou só para o 2 e 3?
