@@ -1,4 +1,4 @@
-Saída que escreve um artigo de texto tá feita
-    Mas falta complementar ela com componentes conexas
+Algoritmo aproximativo para o diâmetro
 
-Distâncias, diâmetro... demais coisas que a lista pede.
+Método público rapidinho para calcular algumas coisas acerca das componentes conexas:
+    Quantidade, tamanho da maior, tamanho da menor

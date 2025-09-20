@@ -4,7 +4,31 @@
 #include <algorithm>
 #include <queue>
 #include <stack>
+#include <cassert>
 
+// Funções ajudantes
+namespace{
+    /**
+    Retorna true <-> a.size() >= b.size().
+    O(1)
+    */
+    bool sort_key(const std::vector<int>& a, const std::vector<int> b) {
+        return a.size() >= b.size();
+    }
+
+    /**
+    Escreve o vetor no final do arquivo. Após cada entrada do vetor, é escrito um espaço (inclusive no final)
+
+    O(writee.size())
+    */
+    void write_vector(std::ofstream& outfile, const std::vector<int>& writee) {
+        for (int i = 0; i < writee.size(); i++) {
+            outfile << writee[i] << " ";
+        }
+    }
+}
+
+// Métodos privados
 std::vector<int> Graph::neighbors(int v) const {
     if (adj_matrix.empty()) return adj_vectors[v];
 
@@ -15,10 +39,50 @@ std::vector<int> Graph::neighbors(int v) const {
     return result;
 }
 
+int Graph::max_dist(const std::vector<int>& dists) const {
+    assert(dists.size() > 0);
+    for (int i = 0; i < dists.size(); i++) assert(dists[i] == -1 || 0 <= dists[i]);
+
+    int max = -2;
+    for (int i = 0; i < dists.size(); i++) {
+        int x = dists[i];
+        if (max == -2 || max < x || x == -1) max = x;
+    }
+
+    return max;
+}
+
+std::vector<std::vector<int>> Graph::connected_components() const {
+    // Pegar as componentes conexas (O(n + m))
+    std::vector<int> components = connected_component_vector();
+
+    // Calcular a componente conexa de maior índice (O(n))
+    int max = -1;
+    for (int i = 1; i <= n; i++) {
+        if (components[i] > max) max = components[i];
+    }
+
+    // Mudar a representação (O(n))
+    std::vector<std::vector<int>> result(max + 1, std::vector<int>()); // Essa lista é indexada em 0 mesmo, pois não é de vértices, e sim de componentes conexas
+    for (int i = 1; i <= n; i++) {
+        int c = components[i];
+        if (c != -1) {
+            result[c].push_back(i); // O(1) amortizado
+        }
+    }
+
+    // Ordenar com base no tamanho (O(k log k) <= O(n log n)
+    std::sort(result.begin(), result.end(), sort_key);
+    return result;
+}
+
+// Métodos públicos
 Graph::Graph(const std::string& filename, bool use_matrix) {
     std::ifstream infile(filename);
+    assert(infile);
 
     infile >> n;
+    assert(n >= 1);
 
     if (use_matrix) {
         adj_matrix.resize(n + 1, std::vector<bool>(n + 1, false)); // Operação O(n^2)
@@ -112,7 +176,11 @@ void Graph::write_output(const std::string& filename) const {
         degree_median = sum/2;
     }
 
+    // Calcular componentes conexas
+    std::vector<std::vector<int>> components = connected_components();
+
     std::ofstream outfile(filename);
+    assert(outfile);
 
     outfile << "Vértices: " << vertices << "\n";
     outfile << "Arestas: " << edges << "\n";
@@ -120,9 +188,21 @@ void Graph::write_output(const std::string& filename) const {
     outfile << "Grau máximo: " << degree_max << "\n";
     outfile << "Grau médio: " << degree_avg << "\n";
     outfile << "Mediana de grau: " << degree_median << "\n";
+
+    outfile << "\n";
+    // Imprimir componentes conexas
+    for (int i = 0; i < components.size(); i++) {
+        std::vector<int> component = components[i];
+
+        outfile << "Componente " << i << ": tamanho "<< component.size() << "; membros: ";
+        write_vector(outfile, component);
+        outfile << "\n";
+    }
 }
 
 void Graph::bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const {
+    assert(1 <= s && s <= n); // Garantir que temos um vértice válido
+    
     dists.resize(n + 1, -1);
     parents.resize(n + 1, -1);
 
@@ -146,12 +226,33 @@ void Graph::bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const
     }
 }
 
+void Graph::bfs_visited(int s, std::vector<int>& visited, int marker) const{
+    assert(visited.size() == n + 1);
+
+    std::queue<int> Q;
+    visited[s] = marker;
+    Q.push(s);
+    while (!Q.empty()) {
+        int v = Q.front();
+        Q.pop();
+        std::vector<int> nb = neighbors(v);
+        for (int i = 0; i < nb.size(); i++) {
+            int w = nb[i];
+            if (visited[w] != marker) {
+                visited[w] = marker;
+                Q.push(w);
+            }
+        }
+    }
+}
+
 void Graph::write_bfs(int s, const std::string& filename) const {
     std::vector<int> dists;
     std::vector<int> parents;
     bfs(s, dists, parents);
 
     std::ofstream outfile(filename);
+    assert(outfile);
 
     outfile << "Nível -1 significa não descoberto. Nível 0 e pai iguai a si significa raiz da árvore geradora induzida" << "\n";
     outfile << "\n";
@@ -161,6 +262,7 @@ void Graph::write_bfs(int s, const std::string& filename) const {
 }
 
 void Graph::dfs(int s, std::vector<int>&levels, std::vector<int>& parents) const {
+    assert(1 <= s && s <= n);
     levels.resize(n + 1, -1);
     parents.resize(n + 1, -1);
 
@@ -191,10 +293,50 @@ void Graph::write_dfs(int s, const std::string& filename) const {
     dfs(s, levels, parents);
 
     std::ofstream outfile(filename);
+    assert(outfile);
 
     outfile << "Nível -1 significa não descoberto. Nível 0 e pai igual a si significa raiz da árvore geradora induzida" << "\n";
     outfile << "\n";
     for (int v = 1; v <= n; v++) {
         outfile << "Vértice " << v << ": pai " << parents[v] << " e nível " << levels[v] << "\n";
     }
+}
+
+int Graph::dist(int u, int v) const {
+    assert(1 <= u && u <= n && 1 <= v && v <= n);
+    std::vector<int> dists;
+    std::vector<int> parents;
+
+    bfs(u, dists, parents);
+    return dists[v];
+}
+
+int Graph::diameter() const {
+    std::vector<int> dists;
+    std::vector<int> parents;
+
+    int max = -2;
+    for (int u = 1; u <= n; u++) {
+        bfs(u, dists, parents);
+        int new_max = max_dist(dists);
+        if (new_max == -1) return -1; // Grafo desconexo.
+        if (max == -2 || max < new_max) max = new_max;
+    }
+
+    return max;
+}
+
+std::vector<int> Graph::connected_component_vector() const {
+    std::vector<int> result(n + 1, -1);
+
+    int i = 1;
+    int marker = 0;
+    for (int i = 1; i <= n; i++) {
+        if (result[i] == -1) {
+            bfs_visited(i, result, marker);
+            marker++;
+        }
+    }
+
+    return result;
 }

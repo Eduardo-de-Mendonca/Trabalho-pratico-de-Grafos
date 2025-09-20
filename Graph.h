@@ -17,6 +17,21 @@ private:
     */
     std::vector<int> neighbors(int v) const;
     
+    /**
+    Retorna o máximo do vetor dists, com a exceção de que -1 é considerado maior que todos os outros inteiros (como se representasse infinito). Poderia ser uma função simples, já que não acessa nenhum atributo do grafo.
+    O vetor deve ter apenas inteiros não negativos ou -1. E não pode estar vazio.
+    O(tamanho de dists)
+    */
+    int max_dist(const std::vector<int>& dists) const;
+
+    /**
+    Retorna um vector<int> resultante com n + 1 entradas. A entrada 0 é -1. resultante[v] é a componente conexa do vértice v (a primeira componente conexa é 0, e assim por diante). Os índices das components conexas não seguem nenhuma ordem em particular.
+
+    Vetores de adjacências: O((n + m))
+    Matriz de adjacências: O(n^2) 
+    */
+    std::vector<int> connected_component_vector() const;
+
 public:
     /**
     Constrói o grafo. A quantidade de vértices deve ser 1 ou mais. O grafo é sempre tratado como não direcionado. Não pode haver duplicatas nas arestas (não pode haver (1,2) e (2,1), nem pode haver (1,2) duas vezes).
@@ -46,13 +61,25 @@ public:
 
     /**
     Altera os vetores dists e parents com informações acerca da bfs a partir do vértice s. No vetor dists, -1 significa "não visitado".
+
+    s deve ser um vértice válido.
+
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2) 
     */
     void bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const;
 
     /**
-    Chama a bfs a partir de s e escreve um arquivo com as informações encontradas.
+    Roda uma bfs, marcando no vetor visited os vértices visitados com o marcador marker.
+    Diferentemente do que ocorre com a bfs usual, visited deve ter tamanho n + 1, e não será reinicializado. Assumimos que todos em visited são diferentes de marker quando o método é chamado.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2) 
+    */ 
+    void bfs_visited(int s, std::vector<int>& visited, int marker) const;
+
+    /**
+    Chama a bfs a partir de s e escreve um arquivo com as informações encontradas. Se filename tem um diretório, ele já deve existir (não será criado pelo método).
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2) 
     */
@@ -66,11 +93,34 @@ public:
     void dfs(int s, std::vector<int>&levels, std::vector<int>& parents) const;
 
     /**
-    Chama a dfs a partir de s e escreve um arquivo com as informações encontradas.
+    Chama a dfs a partir de s e escreve um arquivo com as informações encontradas. Se filename tem um diretório, ele já deve existir (não será criado pelo método).
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2) 
     */
     void write_dfs(int s, const std::string& filename) const;
+
+    /**
+    Retorna a distância no grafo entre u e v. Caso não estejam conectados, retorna -1.
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2) 
+    */
+    int dist(int u, int v) const;
+
+    /**
+    Retorna o diâmetro exato do grafo. Retorna -1 caso o grafo não seja conexo.
+    Vetores de adjacências: O(n(n + m))
+    Matriz de adjacências: O(n^3) 
+    */
+    int diameter() const;
+
+    /**
+    Retorna um vector<vector<int>> resultante indexado em 0 mesmo. resultante[i] é um vector<int> com todos os vértices da i-ésima componente conexa. As componentes saem em ordem decrescente de tamanho.
+    
+    Seja k a quantidade de componentes conexas.
+    Vetores de adjacências: O((n + m + k log k)) <= O(m + n log n) 
+    Matriz de adjacências: O(n^2) 
+    */
+    std::vector<std::vector<int>> connected_components() const;
 };
 
 #endif
