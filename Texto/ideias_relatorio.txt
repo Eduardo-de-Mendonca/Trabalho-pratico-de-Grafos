@@ -11,6 +11,9 @@ Decisões de projeto relevantes:
         Permite que adicionemos no fim com complexidade amortizada O(1), o que nos atende nas situações que poderiam demandar o uso de uma lista.
             O C++ faz alocação dinâmica, dobrando o espaço do vetor quando estoura o espaço. Então a gente não teve que lidar com isso manualmente. Mas sabemos que isso não altera a complexidade
 
+    Temos um método neighbors, que pega os vizinhos
+        Das funções pedidas, só ela e o construtor têm if para ver se é matriz ou vetor de adjacências. De resto, os métodos só chamam esse.
+
     Ignoramos a primeira entrada dos vetores de adjacência, além da primeira linha e da primeira coluna da matriz de adjacência
         Assim, os vértices vão de 1 a n inclusive, e não há necessidade de decrementar ou incrementar ao receber o input ou dar o output
 
