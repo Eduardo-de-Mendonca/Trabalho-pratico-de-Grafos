@@ -16,6 +16,6 @@ int main() {
     g1.write_dfs(5, "Output/dfs_g1.txt");
     g2.write_dfs(5, "Output/dfs_g2.txt");
 
-    std::cout << g1.diameter() << "\n";
-    std::cout << g2.diameter() << "\n";
+    //std::cout << g1.diameter() << "\n";
+    //std::cout << g2.diameter() << "\n";
 }

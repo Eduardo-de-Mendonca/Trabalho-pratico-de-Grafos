@@ -45,7 +45,7 @@ public:
     Constrói o grafo. A quantidade de vértices deve ser 1 ou mais. O grafo é sempre tratado como não direcionado. Não pode haver duplicatas nas arestas (não pode haver (1,2) e (2,1), nem pode haver (1,2) duas vezes).
     Ordena os vetores de adjacências, para oferecer as ordens de busca corretas.
     Vetores de adjacências: O(n + m log m)
-    Matrix de adjacências: O(n^2)
+    Matriz de adjacências: O(n^2)
     */
     Graph(const std::string& filename, bool use_matrix);
 

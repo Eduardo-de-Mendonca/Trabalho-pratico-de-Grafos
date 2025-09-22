@@ -5,14 +5,26 @@ Uma cópia inteira de Graph.h:
 
 Decisões de projeto relevantes:
     Usamos a estutura de dados std::vector para tudo, em vez de ter vetor e lista separados
-        É um vetor, então serve para quando precisamos de vetor
+        É um vetor, então serve para quando precisamos de vetor.
+            Não podemos chamar de lista de adjacências! É vetor de adjacências
+
         Permite que adicionemos no fim com complexidade amortizada O(1), o que nos atende nas situações que poderiam demandar o uso de uma lista.
+            O C++ faz alocação dinâmica, dobrando o espaço do vetor quando estoura o espaço. Então a gente não teve que lidar com isso manualmente. Mas sabemos que isso não altera a complexidade
 
     Ignoramos a primeira entrada dos vetores de adjacência, além da primeira linha e da primeira coluna da matriz de adjacência
         Assim, os vértices vão de 1 a n inclusive, e não há necessidade de decrementar ou incrementar ao receber o input ou dar o output
 
     Nos métodos max_dist, bfs, dfs, dist, diameter, approx_diameter...
         Usamos -1 para representar "infinito" (distância entre vértices não conectados)
+
+    A DFS provavelmente vai ser mais lenta que a BFS
+        A explicação é que ela empilha o mesmo vértice várias vezes
+        Não altera a complexidade, mas é um pouco mais lento na prática
+
+Coisa a garantir:
+    Até o grafo 6, com vetor de adjacências, deve rodar em menos de 10 segundos
+
+    Grafos 3 para cima tendem a estourar a memória com matriz de adjacências
 
 Decisões de projeto menos relevantes, mas que pode ser útil comentar se quiser
     Para o cálculo de componentes conexas:
