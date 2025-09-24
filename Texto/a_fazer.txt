@@ -1,4 +1,0 @@
-Algoritmo aproximativo para o diâmetro
-
-Método público rapidinho para calcular algumas coisas acerca das componentes conexas:
-    Quantidade, tamanho da maior, tamanho da menor

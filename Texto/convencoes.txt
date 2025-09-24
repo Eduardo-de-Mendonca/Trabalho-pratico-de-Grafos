@@ -1,5 +1,0 @@
-Os vértices vão de 1 a n inclusive!
-    Isso significa que a primeira linha e a primeira coluna da matriz de adjacências ficam vazios. A primeira entrada de adj_vectors também fica vazia.
-
-Nomes de funções e atributos em inglês
-    Comentários e documentação em português

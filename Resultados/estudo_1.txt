@@ -1,3 +1,5 @@
+(memória utilizada pelo processo antes e depois de carregar cada grafo. 0 é vetor de adjacências e 1 é matriz de adjacências)
+
 Sem nenhum grafo: 0,6MB
 Grafo1, 0: 3MB
 Descarregou: 1,1MB

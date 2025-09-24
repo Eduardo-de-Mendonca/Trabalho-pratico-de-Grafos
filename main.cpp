@@ -313,5 +313,5 @@ void write_diameters() {
 }
 
 int main() {
-    write_diameters();
+    return 0;
 }
