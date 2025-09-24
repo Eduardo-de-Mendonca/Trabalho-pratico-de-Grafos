@@ -203,6 +203,7 @@ void Graph::write_output(const std::string& filename) const {
     outfile << "Mediana de grau: " << degree_median << "\n";
 
     outfile << "\n";
+    outfile << "Quantidade de componentes conexas: " << components.size() << "\n";
     // Imprimir componentes conexas
     for (int i = 0; i < components.size(); i++) {
         std::vector<int> component = components[i];
@@ -331,6 +332,8 @@ int Graph::diameter() const {
     int max = -2;
     for (int u = 1; u <= n; u++) {
         bfs(u, dists, parents);
+        std::cout << "Fez bfs " << u <<"/" << n << "\n";
+
         int new_max = max_dist(dists);
         if (new_max == -1) return -1; // Grafo desconexo.
         if (max == -2 || max < new_max) max = new_max;

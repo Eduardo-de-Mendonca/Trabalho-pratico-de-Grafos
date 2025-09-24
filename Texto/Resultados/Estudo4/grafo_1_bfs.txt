@@ -1,0 +1,15 @@
+Raiz: 1
+Pai de 10: 2042
+Pai de 20: 8382
+Pai de 30: 2394
+
+Raiz: 2
+Pai de 10: 8935
+Pai de 20: 9071
+Pai de 30: 3555
+
+Raiz: 3
+Pai de 10: 7685
+Pai de 20: 9543
+Pai de 30: 5783
+

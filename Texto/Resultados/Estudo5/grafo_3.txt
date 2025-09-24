@@ -1,0 +1,4 @@
+Distância (10, 20): 9
+Distânci (10, 30): -1
+Distância (20, 30): -1
+

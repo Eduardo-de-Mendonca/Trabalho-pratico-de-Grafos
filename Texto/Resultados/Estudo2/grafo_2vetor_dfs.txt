@@ -1,3 +1,0 @@
-100 DFS: 3.32814 segundos
-Média por DFS: 0.0332814
-

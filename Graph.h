@@ -122,7 +122,7 @@ public:
     int diameter() const;
 
     /**
-    Retorna uma aproximação a do diâmetro d do grafo usando varredura dupla. d/2 <= a <= d. Se o grafo é uma árvore, a = d. Se o grafo não for conexo, necessariamente retorna -1.
+    Retorna uma aproximação a do diâmetro d do grafo usando varredura dupla. Se o grafo é uma árvore, a = d. Se o grafo não for conexo, necessariamente retorna -1.
 
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2)

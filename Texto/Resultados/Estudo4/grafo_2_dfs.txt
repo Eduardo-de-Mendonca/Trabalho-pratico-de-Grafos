@@ -1,0 +1,15 @@
+Raiz: 1
+Pai de 10: -1
+Pai de 20: -1
+Pai de 30: -1
+
+Raiz: 2
+Pai de 10: 3946
+Pai de 20: -1
+Pai de 30: -1
+
+Raiz: 3
+Pai de 10: -1
+Pai de 20: 217
+Pai de 30: 3513
+

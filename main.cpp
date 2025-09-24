@@ -161,42 +161,6 @@ void test_performance_dfs(const std::string& graph_file, const std::string& file
     std::cout << no_optimization << "\n";
 }
 
-void test_performance_graph(const std::string& graph_file, const std::string& filename, bool use_matrix) {
-    std::ofstream outfile(filename);
-    assert(outfile);
-
-    Graph g(graph_file, use_matrix);
-
-    std::vector<int> dists(g.get_n() + 1);
-    std::vector<int> parents(g.get_n() + 1);
-    double duration, avg;
-
-    auto start = time_now();
-    for (int s = 1; s <= 100; s++) {
-        g.bfs(s, dists, parents);
-    }
-    auto end = time_now();
-
-    duration = time_elapsed(start, end);
-    avg = duration/100;
-
-    outfile << "100 BFS: " << duration << " segundos\n";
-    outfile << "Média por BFS: " << avg << "\n";
-
-    // Agora a DFS
-    start = time_now();
-    for (int s = 1; s <= 100; s++) {
-        g.dfs(s, dists, parents);
-    }
-    end = time_now();
-
-    duration = time_elapsed(start, end);
-    avg = duration/100;
-
-    outfile << "100 DFS: " << duration << " segundos\n";
-    outfile << "Média por DFS: " << avg << "\n\n";
-}
-
 void test_performance() {
     std::vector<std::tuple<std::string, std::string, bool>> graphs = {
         {"Grafos/grafo_1.txt", "Output/Tempos/grafo_1vetor", false},
@@ -226,6 +190,128 @@ void test_performance() {
     }
 }
 
+void write_parents_graph(Graph g, const std::string& filename, bool use_dfs) {
+    std::ofstream outfile(filename);
+    assert(outfile);
+
+    std::vector<int> dists;
+    std::vector<int> parents;
+    for (int s = 1; s <= 3; s++) {
+        if (use_dfs) g.dfs(s, dists, parents);
+        else g.bfs(s, dists, parents);
+
+        outfile << "Raiz: " << s << "\n";
+        for (int descendant = 10; descendant <= 30; descendant += 10) {
+            outfile << "Pai de " << descendant << ": " << parents[descendant] << "\n";
+        }
+
+        outfile << "\n";
+    }
+}
+
+void write_parents() {
+    std::vector<std::tuple<std::string, std::string>> graphs = {
+        {"Grafos/grafo_1.txt", "Output/Pais/grafo_1"},
+        {"Grafos/Grandes/grafo_2.txt", "Output/Pais/grafo_2"},
+        {"Grafos/Grandes/grafo_3.txt", "Output/Pais/grafo_3"},
+        {"Grafos/Grandes/grafo_4.txt", "Output/Pais/grafo_4"},
+        {"Grafos/Grandes/grafo_5.txt", "Output/Pais/grafo_5"},
+        {"Grafos/Grandes/grafo_6.txt", "Output/Pais/grafo_6"},
+    };
+
+    for (auto t : graphs) {
+        std::string infile = std::get<0>(t);
+        std::string outfile = std::get<1>(t);
+
+        Graph g(infile, false);
+
+        std::string bfs = "_bfs.txt";
+        std::string dfs = "_dfs.txt";
+        write_parents_graph(g, outfile + bfs, false);
+        write_parents_graph(g, outfile + dfs, true);
+    }
+}
+
+void write_distances_graph(Graph g, const std::string& filename) {
+    std::ofstream outfile(filename);
+    assert(outfile);
+
+    std::vector<int> dists10;
+    std::vector<int> dists20;
+    std::vector<int> parents;
+    g.bfs(10, dists10, parents);
+    g.bfs(20, dists20, parents);
+
+    outfile << "Distância (10, 20): " << dists10[20] << "\n";
+    outfile << "Distância (10, 30): " << dists10[30] << "\n";
+    outfile << "Distância (20, 30): " << dists20[30] << "\n";
+    outfile << "\n";    
+}
+
+void write_distances() {
+    std::vector<std::tuple<std::string, std::string>> graphs = {
+        {"Grafos/grafo_1.txt", "Output/Distancias/grafo_1.txt"},
+        {"Grafos/Grandes/grafo_2.txt", "Output/Distancias/grafo_2.txt"},
+        {"Grafos/Grandes/grafo_3.txt", "Output/Distancias/grafo_3.txt"},
+        {"Grafos/Grandes/grafo_4.txt", "Output/Distancias/grafo_4.txt"},
+        {"Grafos/Grandes/grafo_5.txt", "Output/Distancias/grafo_5.txt"},
+        {"Grafos/Grandes/grafo_6.txt", "Output/Distancias/grafo_6.txt"},
+    };
+
+    for (auto t : graphs) {
+        std::string infile = std::get<0>(t);
+        std::string outfile = std::get<1>(t);
+
+        Graph g(infile, false);
+        write_distances_graph(g, outfile);
+    }
+}
+
+void write_info() {
+    std::vector<std::tuple<std::string, std::string>> graphs = {
+        {"Grafos/grafo_1.txt", "Output/ComponentesConexas/grafo_1.txt"},
+        {"Grafos/Grandes/grafo_2.txt", "Output/ComponentesConexas/grafo_2.txt"},
+        {"Grafos/Grandes/grafo_3.txt", "Output/ComponentesConexas/grafo_3.txt"},
+        {"Grafos/Grandes/grafo_4.txt", "Output/ComponentesConexas/grafo_4.txt"},
+        {"Grafos/Grandes/grafo_5.txt", "Output/ComponentesConexas/grafo_5.txt"},
+        {"Grafos/Grandes/grafo_6.txt", "Output/ComponentesConexas/grafo_6.txt"},
+    };
+
+    for (auto t : graphs) {
+        std::string infile = std::get<0>(t);
+        std::string outfile = std::get<1>(t);
+
+        Graph g(infile, false);
+        g.write_output(outfile);
+    }
+}
+
+std::vector<std::tuple<std::string, std::string>> get_filenames() {
+    return {
+        {"Grafos/grafo_1.txt", "Output/grafo_1.txt"},
+        {"Grafos/Grandes/grafo_2.txt", "Output/grafo_2.txt"},
+        {"Grafos/Grandes/grafo_3.txt", "Output/grafo_3.txt"},
+        {"Grafos/Grandes/grafo_4.txt", "Output/grafo_4.txt"},
+        {"Grafos/Grandes/grafo_5.txt", "Output/grafo_5.txt"},
+        {"Grafos/Grandes/grafo_6.txt", "Output/grafo_6.txt"},
+    };
+}
+
+void write_diameters() {
+    std::vector<std::tuple<std::string, std::string>> graphs = get_filenames();
+
+    for (auto t : graphs) {
+        std::string infile = std::get<0>(t);
+        std::string outfile = std::get<1>(t);
+
+        Graph g(infile, false);
+        std::ofstream out(outfile);
+        assert(out);
+
+        out << "Diâmetro exato: " << g.diameter() << "\n";
+    }
+}
+
 int main() {
-    test_performance();
+    write_diameters();
 }

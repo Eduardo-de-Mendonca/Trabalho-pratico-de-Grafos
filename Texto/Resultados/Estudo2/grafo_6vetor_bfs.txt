@@ -1,3 +1,0 @@
-100 BFS: 244.847 segundos
-Média por BFS: 2.44847
-

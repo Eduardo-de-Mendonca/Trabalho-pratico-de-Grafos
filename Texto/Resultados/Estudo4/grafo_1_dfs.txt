@@ -1,0 +1,15 @@
+Raiz: 1
+Pai de 10: 709
+Pai de 20: 666
+Pai de 30: 86
+
+Raiz: 2
+Pai de 10: 709
+Pai de 20: 666
+Pai de 30: 86
+
+Raiz: 3
+Pai de 10: 709
+Pai de 20: 666
+Pai de 30: 86
+
