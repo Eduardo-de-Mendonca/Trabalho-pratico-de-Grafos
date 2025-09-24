@@ -145,6 +145,13 @@ public:
     Matriz de adjacências: O(n^2) 
     */
     void connected_component_info(int& amount, int& size_largest, int& size_smallest) const;
+
+    /**
+    Retorna a quantidade de vértices do grafo.
+
+    O(1)
+    */
+    int get_n() const;
 };
 
 #endif

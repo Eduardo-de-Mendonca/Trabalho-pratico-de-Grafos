@@ -1,4 +1,4 @@
-g++ -c Graph.cpp
-g++ -c main.cpp
-g++ Graph.o main.o -o main.exe
+g++ -c Graph.cpp -O3
+g++ -c main.cpp -O3
+g++ Graph.o main.o -O3 -o main.exe
 .\main.exe

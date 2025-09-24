@@ -98,10 +98,10 @@ Graph::Graph(const std::string& filename, bool use_matrix) {
     assert(n >= 1);
 
     if (use_matrix) {
-        adj_matrix.resize(n + 1, std::vector<bool>(n + 1, false)); // Operação O(n^2)
+        adj_matrix.assign(n + 1, std::vector<bool>(n + 1, false)); // Operação O(n^2)
         // Deixaremos a primeira posição de tudo vazia, pois os vértices começam em 1
     } else {
-        adj_vectors.resize(n + 1, std::vector<int>()); // Operação O(n)
+        adj_vectors.assign(n + 1, std::vector<int>()); // Operação O(n)
     }
 
     // Operações O(m)
@@ -216,8 +216,8 @@ void Graph::write_output(const std::string& filename) const {
 void Graph::bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const {
     assert(1 <= s && s <= n); // Garantir que temos um vértice válido
     
-    dists.resize(n + 1, -1);
-    parents.resize(n + 1, -1);
+    dists.assign(n + 1, -1);
+    parents.assign(n + 1, -1);
 
     std::queue<int> Q;
     dists[s] = 0;
@@ -276,8 +276,8 @@ void Graph::write_bfs(int s, const std::string& filename) const {
 
 void Graph::dfs(int s, std::vector<int>&levels, std::vector<int>& parents) const {
     assert(1 <= s && s <= n);
-    levels.resize(n + 1, -1);
-    parents.resize(n + 1, -1);
+    levels.assign(n + 1, -1);
+    parents.assign(n + 1, -1);
 
     std::stack<std::pair<int, int>> P; // A primeira entrada do par é o vértice. A segunda é o cara que o empilhou
     P.push(std::make_pair(s, s));
@@ -387,3 +387,6 @@ void Graph::connected_component_info(int& amount, int& size_largest, int& size_s
     size_smallest = min;
 }
 
+int Graph::get_n() const {
+    return n;
+}
