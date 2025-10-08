@@ -30,7 +30,13 @@ namespace{
 
 // Métodos privados
 std::vector<int> Graph::neighbors(int v) const {
-    return r->neighbors(v);
+    if (adj_matrix.empty()) return adj_vectors[v];
+
+    std::vector<int> result;
+    for (int j = 1; j <= n; j++) {
+        if (adj_matrix[v][j]) result.push_back(j);
+    }
+    return result;
 }
 
 int Graph::max_dist(const std::vector<int>& dists) const {
@@ -47,7 +53,6 @@ int Graph::max_dist(const std::vector<int>& dists) const {
 }
 
 std::vector<int> Graph::connected_component_vector() const {
-    int n = get_n();
     std::vector<int> result(n + 1, -1);
 
     int i = 1;
@@ -63,8 +68,6 @@ std::vector<int> Graph::connected_component_vector() const {
 }
 
 std::vector<std::vector<int>> Graph::connected_components_unsorted() const {
-    int n = get_n();
-
     // Pegar as componentes conexas (O(n + m))
     std::vector<int> components = connected_component_vector();
 
@@ -88,20 +91,64 @@ std::vector<std::vector<int>> Graph::connected_components_unsorted() const {
 
 // Métodos públicos
 Graph::Graph(const std::string& filename, bool use_matrix) {
+    std::ifstream infile(filename);
+    assert(infile);
+
+    infile >> n;
+    assert(n >= 1);
+
     if (use_matrix) {
-        r = std::make_unique<AdjacencyMatrix>(filename);
+        adj_matrix.assign(n + 1, std::vector<bool>(n + 1, false)); // Operação O(n^2)
+        // Deixaremos a primeira posição de tudo vazia, pois os vértices começam em 1
     } else {
-        r = std::make_unique<AdjacencyVector>(filename);
+        adj_vectors.assign(n + 1, std::vector<int>()); // Operação O(n)
+    }
+
+    // Operações O(m)
+    int u, v;
+    while (infile >> u >> v) {
+        if (use_matrix) {
+            adj_matrix[u][v] = true;
+            adj_matrix[v][u] = true; // grafo não direcionado
+        } else {
+            // As duas operações seguintes são O(1) amortizado
+            adj_vectors[u].push_back(v);
+            adj_vectors[v].push_back(u);
+        }
+    }
+
+    if (use_matrix) return;
+
+    // Operação O(m log m) para vetores de adjacências
+    for (int i = 1; i <= n; i++) {
+        std::sort(adj_vectors[i].begin(), adj_vectors[i].end());
     }
 }
 
 void Graph::print() const {
-    r->print();
+    std::cout << "Vértices" << n << "\n";
+    if (!adj_matrix.empty()) {
+        std::cout << "Matriz de adjacências\n";
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                std::cout << adj_matrix[i][j] << " ";
+            }
+            std::cout << "\n";
+        }
+    } else {
+        std::cout << "Vetores de adjacências\n";
+        for (int i = 1; i <= n; i++) {
+            std::cout << i << ": ";
+            for (int v : adj_vectors[i]) {
+                std::cout << v << " ";
+            }
+            std::cout << "\n";
+        }
+    }
 }
 
 void Graph::write_output(const std::string& filename) const {
-    int vertices = get_n();
-    int n = get_n();
+    int vertices = n;
 
     // O(n + m) para vetores de adjacências, O(n^2) para matriz de adjacências
     int edges = 0;
@@ -168,7 +215,6 @@ void Graph::write_output(const std::string& filename) const {
 }
 
 void Graph::bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const {
-    int n = get_n();
     assert(1 <= s && s <= n); // Garantir que temos um vértice válido
     
     dists.assign(n + 1, -1);
@@ -195,7 +241,6 @@ void Graph::bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const
 }
 
 void Graph::bfs_visited(int s, std::vector<int>& visited, int marker) const{
-    int n = get_n();
     assert(visited.size() == n + 1);
 
     std::queue<int> Q;
@@ -225,14 +270,12 @@ void Graph::write_bfs(int s, const std::string& filename) const {
 
     outfile << "Nível -1 significa não descoberto. Nível 0 e pai iguai a si significa raiz da árvore geradora induzida" << "\n";
     outfile << "\n";
-    int n = get_n();
     for (int v = 1; v <= n; v++) {
         outfile << "Vértice " << v << ": pai " << parents[v] << " e nível " << dists[v] << "\n";
     }
 }
 
 void Graph::dfs(int s, std::vector<int>&levels, std::vector<int>& parents) const {
-    int n = get_n();
     assert(1 <= s && s <= n);
     levels.assign(n + 1, -1);
     parents.assign(n + 1, -1);
@@ -268,14 +311,12 @@ void Graph::write_dfs(int s, const std::string& filename) const {
 
     outfile << "Nível -1 significa não descoberto. Nível 0 e pai igual a si significa raiz da árvore geradora induzida" << "\n";
     outfile << "\n";
-    int n = get_n();
     for (int v = 1; v <= n; v++) {
         outfile << "Vértice " << v << ": pai " << parents[v] << " e nível " << levels[v] << "\n";
     }
 }
 
 int Graph::dist(int u, int v) const {
-    int n = get_n();
     assert(1 <= u && u <= n && 1 <= v && v <= n);
     std::vector<int> dists;
     std::vector<int> parents;
@@ -289,7 +330,6 @@ int Graph::diameter() const {
     std::vector<int> parents;
 
     int max = -2;
-    int n = get_n();
     for (int u = 1; u <= n; u++) {
         bfs(u, dists, parents);
         std::cout << "Fez bfs " << u <<"/" << n << "\n";
@@ -309,7 +349,6 @@ int Graph::approx_diameter() const {
 
     int max_v = 0;
     int max = 0;
-    int n = get_n();
     for (int v = 1; v <= n; v++) {
         int d = dists[v];
         if (d == -1 || max_v == 0 || max < d) {
@@ -352,5 +391,5 @@ void Graph::connected_component_info(int& amount, int& size_largest, int& size_s
 }
 
 int Graph::get_n() const {
-    return r->get_n();
+    return n;
 }

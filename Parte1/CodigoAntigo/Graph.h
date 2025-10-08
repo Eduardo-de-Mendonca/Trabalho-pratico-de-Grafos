@@ -1,16 +1,14 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "Representation.h"
 #include <vector>
 #include <string>
-#include <memory>
 
 class Graph {
 private:
-    //std::vector<std::vector<int>> adj_vectors;
-    //std::vector<std::vector<bool>> adj_matrix;
-    std::unique_ptr<GraphRepresentation> r;
+    std::vector<std::vector<int>> adj_vectors;
+    std::vector<std::vector<bool>> adj_matrix;
+    int n; // Quantidade de vértices
 
     /**
     Retorna um vetor com os vizinhos do vértice v (de 1 a n), em ordem crescente. No caso de vetores de adjacências, é simplesmente uma cópia do vetor de adjacências correspondente a v.
