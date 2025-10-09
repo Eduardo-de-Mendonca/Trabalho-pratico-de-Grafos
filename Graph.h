@@ -7,11 +7,12 @@
 #include <memory>
 
 class Graph {
-private:
+protected:
     //std::vector<std::vector<int>> adj_vectors;
     //std::vector<std::vector<bool>> adj_matrix;
     std::unique_ptr<GraphRepresentation> r;
 
+private:
     /**
     Retorna um vetor com os vizinhos do vértice v (de 1 a n), em ordem crescente. No caso de vetores de adjacências, é simplesmente uma cópia do vetor de adjacências correspondente a v.
     Vetores de adjacências: O(grau(v))
@@ -77,7 +78,7 @@ public:
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2) 
     */
-    void bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const;
+    void bfs(int s, std::vector<int>& levels, std::vector<int>& parents) const;
 
     /**
     Roda uma bfs, marcando no vetor visited os vértices visitados com o marcador marker.
@@ -114,14 +115,14 @@ public:
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2) 
     */
-    int dist(int u, int v) const;
+    virtual int dist(int u, int v) const;
 
     /**
     Retorna o diâmetro exato do grafo. Retorna -1 caso o grafo não seja conexo.
     Vetores de adjacências: O(n(n + m))
     Matriz de adjacências: O(n^3) 
     */
-    int diameter() const;
+    virtual int diameter() const;
 
     /**
     Retorna uma aproximação a do diâmetro d do grafo usando varredura dupla. Se o grafo é uma árvore, a = d. Se o grafo não for conexo, necessariamente retorna -1.
@@ -129,7 +130,7 @@ public:
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2)
     */
-    int approx_diameter() const;
+    virtual int approx_diameter() const;
 
     /**
     Retorna um vector<vector<int>> resultante indexado em 0 mesmo. resultante[i] é um vector<int> com todos os vértices da i-ésima componente conexa. Os índices das componentes seguem ordem decrescente de tamanho
@@ -154,6 +155,24 @@ public:
     O(1)
     */
     int get_n() const;
+};
+
+class WeightedGraph: public Graph {
+private:
+    /**
+    weights[u][i] é o peso da aresta que vai de u para o seu i-ésimo vizinho (em ordem crescente de índice)
+    */
+    std::vector<std::vector<double>> weights;
+
+public:
+    WeightedGraph(const std::string& filename, bool use_matrix);
+
+    // Declarar Dijkstra (e talvez um novo dist)
+
+    // Remover métodos que não fazem mais sentido
+    int dist(int u, int v) const override = delete;
+    int diameter() const override = delete;
+    int approx_diameter() const override = delete;
 };
 
 #endif

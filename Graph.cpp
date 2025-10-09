@@ -167,26 +167,26 @@ void Graph::write_output(const std::string& filename) const {
     }
 }
 
-void Graph::bfs(int s, std::vector<int>& dists, std::vector<int>& parents) const {
+void Graph::bfs(int s, std::vector<int>& levels, std::vector<int>& parents) const {
     int n = get_n();
     assert(1 <= s && s <= n); // Garantir que temos um vértice válido
     
-    dists.assign(n + 1, -1);
+    levels.assign(n + 1, -1);
     parents.assign(n + 1, -1);
 
     std::queue<int> Q;
-    dists[s] = 0;
+    levels[s] = 0;
     parents[s] = s;
     Q.push(s);
     while (!Q.empty()) {
         int v = Q.front();
         Q.pop();
         std::vector<int> nb = neighbors(v);
-        int d = dists[v];
+        int d = levels[v];
         for (int i = 0; i < nb.size(); i++) {
             int w = nb[i];
-            if (dists[w] == -1) {
-                dists[w] = d + 1;
+            if (levels[w] == -1) {
+                levels[w] = d + 1;
                 parents[w] = v;
                 Q.push(w);
             }
