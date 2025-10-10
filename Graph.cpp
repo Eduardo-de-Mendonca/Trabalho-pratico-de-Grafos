@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <queue>
 #include <stack>
+#include <functional>
 #include <cassert>
 
 // Funções ajudantes
@@ -459,3 +460,42 @@ void WeightedGraph::print() const {
     }
 }
 
+void WeightedGraph::dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const {
+    int n = get_n();
+    assert(1 <= s && s <= n);
+
+    // Ver se há pesos negativos - O(n + m)
+    for (int u = 1; u <= n; u++) {
+        for (int i = 0; i < weights[u].size(); i++) {
+            double w = weights[u][i];
+            if (w < 0) throw std::runtime_error("Encontrou um peso negativo durante a execução do algoritmo de Dijkstra");
+        }
+    }
+
+    // Inicialização (O(1))
+    double inf = -1;
+    dists.assign(n + 1, inf);
+    parents.assign(n + 1, -1);
+
+    dists[s] = 0;
+    parents[s] = s;
+
+    if (!use_vector_only) {
+        // Heap mínima
+        std::priority_queue<
+            std::pair<double, int>,
+            std::vector<std::pair<double, int>>,
+            std::greater<std::pair<double, int>>
+        > H;
+
+        H.push(std::make_pair(dists[s], s));
+
+        while (!H.empty()) {
+            std::pair<int, int> p = H.top();
+            H.pop();
+            int u = p.second;
+
+            // Terminar
+        }
+    }
+}

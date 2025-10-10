@@ -186,6 +186,7 @@ public:
     void print() const override;
 
     // Declarar Dijkstra (e talvez um novo dist)
+    void dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const; 
 
     int dist(int u, int v) const override{
         throw std::runtime_error("Método ainda não implementado");
