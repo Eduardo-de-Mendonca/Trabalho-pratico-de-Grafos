@@ -5,20 +5,24 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <stdexcept>
 
 class Graph {
 protected:
-    //std::vector<std::vector<int>> adj_vectors;
-    //std::vector<std::vector<bool>> adj_matrix;
     std::unique_ptr<GraphRepresentation> r;
 
-private:
+    // Construtor vazio para as classes derivadas
+    Graph() = default;
+
     /**
     Retorna um vetor com os vizinhos do vértice v (de 1 a n), em ordem crescente. No caso de vetores de adjacências, é simplesmente uma cópia do vetor de adjacências correspondente a v.
     Vetores de adjacências: O(grau(v))
     Matriz de adjacências: O(n)
     */
     std::vector<int> neighbors(int v) const;
+
+private:
+
     
     /**
     Retorna o máximo do vetor dists, com a exceção de que -1 é considerado maior que todos os outros inteiros (como se representasse infinito). Poderia ser uma função simples, já que não acessa nenhum atributo do grafo.
@@ -57,7 +61,7 @@ public:
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2)
     */
-    void print() const;
+    virtual void print() const;
 
     /**
     Escreve um arquivo com informações sobre o grafo:
@@ -165,14 +169,36 @@ private:
     std::vector<std::vector<double>> weights;
 
 public:
+    /**
+    Constrói o grafo. A quantidade de vértices deve ser 1 ou mais. O grafo é sempre tratado como não direcionado. Não pode haver duplicatas nas arestas (não pode haver (1,2) e (2,1), nem pode haver (1,2) duas vezes).
+    Ordena os vetores de adjacências, para oferecer as ordens de busca corretas.
+
+    O(n + m log m) sempre (mesmo com matriz de adjacências, por causa dos pesos)
+    */
     WeightedGraph(const std::string& filename, bool use_matrix);
+
+    /**
+    Imprime o grafo no console. Imprime sempre no formato de um vetor de adjacências, independetemente de como está internamente representado.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    void print() const override;
 
     // Declarar Dijkstra (e talvez um novo dist)
 
-    // Remover métodos que não fazem mais sentido
-    int dist(int u, int v) const override = delete;
-    int diameter() const override = delete;
-    int approx_diameter() const override = delete;
+    int dist(int u, int v) const override{
+        throw std::runtime_error("Método ainda não implementado");
+    };
+
+    // Remover métodos que não são mais necessários
+    int diameter() const override{
+        throw std::runtime_error("Método não implementado");
+    };
+
+    int approx_diameter(){
+        throw std::runtime_error("Método não implementado");
+    };
 };
 
 #endif

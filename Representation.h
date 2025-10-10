@@ -24,7 +24,7 @@ private:
     std::vector<std::vector<int>> vec;
 
 public:
-    AdjacencyVector(const std::string& filename);
+    AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges);
 
     int get_n() const override;
 
@@ -40,7 +40,7 @@ private:
     std::vector<std::vector<bool>> mat;
 
 public:
-    AdjacencyMatrix(const std::string& filename);
+    AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges);
 
     int get_n() const override;
 

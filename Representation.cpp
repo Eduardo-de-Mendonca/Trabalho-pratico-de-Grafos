@@ -5,19 +5,15 @@
 #include <algorithm>
 #include <cassert>
 
-AdjacencyVector::AdjacencyVector(const std::string& filename) {
-    std::ifstream infile(filename);
-    assert(infile);
-
-    int n;
-    infile >> n;
+AdjacencyVector::AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges) {
     assert(n >= 1);
 
     vec.assign(n + 1, std::vector<int>()); // Operação O(n)
 
     // Operações O(m)
-    int u, v;
-    while (infile >> u >> v) {
+    for (auto edge : edges) {
+        int u = edge.first;
+        int v = edge.second;
         vec[u].push_back(v);
         vec[v].push_back(u); // grafo não direcionado
     }
@@ -50,20 +46,16 @@ void AdjacencyVector::print() const {
     }
 }
 
-AdjacencyMatrix::AdjacencyMatrix(const std::string& filename) {
-    std::ifstream infile(filename);
-    assert(infile);
-
-    int n;
-    infile >> n;
+AdjacencyMatrix::AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges) {
     assert(n >= 1);
 
     mat.assign(n + 1, std::vector<bool>(n + 1, false)); // Operação O(n^2)
     // Deixaremos a primeira posição de tudo vazia, pois os vértices começam em 1
 
     // Operações O(m)
-    int u, v;
-    while (infile >> u >> v) {
+    for (auto edge : edges) {
+        int u = edge.first;
+        int v = edge.second;
         mat[u][v] = true;
         mat[v][u] = true; // grafo não direcionado
     }

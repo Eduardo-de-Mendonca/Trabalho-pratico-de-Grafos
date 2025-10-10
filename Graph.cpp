@@ -26,6 +26,51 @@ namespace{
             outfile << writee[i] << " ";
         }
     }
+
+    /**
+    Lê o arquivo filename e altera n e edges com as informações do arquivo.
+
+    O(n + m)
+    */
+    void read_file_info(const std::string& filename, int& n, std::vector<std::pair<int, int>>& edges) {
+        std::ifstream infile(filename);
+        assert(infile);
+        
+        infile >> n;
+        assert(n >= 1);
+
+        edges.resize(0);
+        int u, v;
+        while (infile >> u >> v) {
+            edges.push_back(std::make_pair(u, v));
+        }
+
+        return;
+    }
+
+    /**
+    Lê o arquivo filename (representando um grafo com peso) e altera n e edges com as informações do arquivo.
+
+    O(n + m)
+    */
+    void read_file_info_weighted(const std::string& filename, int& n, std::vector<std::pair<int, int>>& edges, std::vector<double>& weights) {
+        std::ifstream infile(filename);
+        assert(infile);
+        
+        infile >> n;
+        assert(n >= 1);
+
+        edges.resize(0);
+        weights.resize(0);
+        int u, v;
+        double w;
+        while (infile >> u >> v >> w) {
+            edges.push_back(std::make_pair(u, v));
+            weights.push_back(w);
+        }
+
+        return;
+    }
 }
 
 // Métodos privados
@@ -88,10 +133,13 @@ std::vector<std::vector<int>> Graph::connected_components_unsorted() const {
 
 // Métodos públicos
 Graph::Graph(const std::string& filename, bool use_matrix) {
+    int n;
+    std::vector<std::pair<int, int>> edges;
+    read_file_info(filename, n, edges);
     if (use_matrix) {
-        r = std::make_unique<AdjacencyMatrix>(filename);
+        r = std::make_unique<AdjacencyMatrix>(n, edges);
     } else {
-        r = std::make_unique<AdjacencyVector>(filename);
+        r = std::make_unique<AdjacencyVector>(n, edges);
     }
 }
 
@@ -354,3 +402,60 @@ void Graph::connected_component_info(int& amount, int& size_largest, int& size_s
 int Graph::get_n() const {
     return r->get_n();
 }
+
+// Métodos de WeightedGraph
+WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
+    int n;
+    std::vector<std::pair<int, int>> edges;
+    std::vector<double> w;
+
+    // Ler arquivo e construir a representação O(n + m)
+    read_file_info_weighted(filename, n, edges, w);
+    if (use_matrix) {
+        r = std::make_unique<AdjacencyMatrix>(n, edges);
+    } else {
+        r = std::make_unique<AdjacencyVector>(n, edges);
+    }
+
+    // Construir weights (cuidado para mantê-lo ordenadinho - O(m log m))...
+
+    // Construir um vetor de adjacências temporário com pares (v, weight) (O(n + m))
+    std::vector<std::vector<std::pair<int, double>>> temp_weights(n + 1, std::vector<std::pair<int, double>>());
+    for (int i = 0; i < edges.size(); i++) {
+        int u = edges[i].first;
+        int v = edges[i].second;
+        double weight = w[i];
+        temp_weights[u].push_back(std::make_pair(v, weight));
+        temp_weights[v].push_back(std::make_pair(u, weight)); // grafo não direcionado
+    }
+
+    // Ordenar com base nos vértices (O(m log m))
+    for (int i = 1; i <= n; i++) {
+        std::sort(temp_weights[i].begin(), temp_weights[i].end()); // Ordenar com base no primeiro elemento do par (o vértice)
+    }
+
+    // Copiar os pesos na ordem correta (O(n + m))
+    weights.assign(n + 1, std::vector<double>());
+    for (int i = 1; i <= n; i++) {
+        for (int j = 0; j < temp_weights[i].size(); j++) {
+            weights[i].push_back(temp_weights[i][j].second);
+        }
+    }
+}
+
+void WeightedGraph::print() const {
+    int n = get_n();
+    std::cout << "Vértices: " << n << "\n";
+    std::cout << "Vetor de adjacências com pesos:\n";
+    for (int u = 1; u <= n; u++) {
+        std::vector<int> nb = neighbors(u);
+        std::cout << u << ": ";
+        for (int i = 0; i < nb.size(); i++) {
+            int v = nb[i];
+            double weight = weights[u][i];
+            std::cout << "(" << v << " com peso " << weight << ") ";
+        }
+        std::cout << "\n";
+    }
+}
+
