@@ -159,6 +159,14 @@ public:
     O(1)
     */
     int get_n() const;
+
+    /**
+    Retorna o caminho na árvore em questão da raiz até v (incluindo ambos).
+    Assumimos que parents da raiz é ela própria
+
+    O(n)
+    */
+    std::vector<int> reconstruct_path(const std::vector<int>& parents, int v) const;
 };
 
 class WeightedGraph: public Graph {
@@ -185,11 +193,30 @@ public:
     */
     void print() const override;
 
-    // Declarar Dijkstra (e talvez um novo dist)
+    /**
+    Altera os vetores dists e parents com informações acerca do algoritmo de Dijkstra a partir do vértice s. No vetor dists, std::numeric_limits<double>::infinity() significa não visitado..
+
+    s deve ser um vértice válido.
+
+    Vetores de adjacências:
+        Usando Heap: O(n + m log n)
+        Usando apenas vetores: O(n^2)
+    Matriz de adjacências:
+        Usando Heap: O(n^2)
+        Usando apenas vetores: O(n^2)
+    */ 
     void dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const; 
 
+    /**
+    Retorna a distância no grafo entre u e v. Caso não estejam conectados, retorna std::numeric_limits<double>::infinity().
+
+    Vetores de adjacências: O(n + m log n)
+    Matriz de adjacências: O(n^2) 
+    */
+    double dist_weighted(int u, int v) const;
+
     int dist(int u, int v) const override{
-        throw std::runtime_error("Método ainda não implementado");
+        throw std::runtime_error("dist em WeightedGraph deve retornar double");
     };
 
     // Remover métodos que não são mais necessários

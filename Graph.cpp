@@ -6,6 +6,7 @@
 #include <stack>
 #include <functional>
 #include <cassert>
+#include <limits>
 
 // Funções ajudantes
 namespace{
@@ -71,6 +72,29 @@ namespace{
         }
 
         return;
+    }
+
+    /**
+    Olhando a partir da posição 1, retorna o índice da menor distância dentre os elementos que não foram visitados e cuja distância não é infinita. "double inf = -1" é considerado como distância infinita. Se ninguém for encontrado, retorna -1.
+
+    O(n)
+    */
+    int nonvis_mindist_idx(const std::vector<double>& dists, const std::vector<bool>& vis) {
+        double inf = std::numeric_limits<double>::infinity();
+
+        int result = -1;
+        double min = inf;
+        for (int v = 1; v < dists.size(); v++) {
+            if (vis[v]) continue;
+            if (dists[v] == inf) continue;
+
+            if (min >= dists[v]) {
+                result = v;
+                min = dists[v];
+            }
+        }
+
+        return result;
     }
 }
 
@@ -404,6 +428,36 @@ int Graph::get_n() const {
     return r->get_n();
 }
 
+std::vector<int> Graph::reconstruct_path(const std::vector<int>& parents, int u) const {
+    int n = get_n();
+    assert(1 <= u && u <= n);
+
+    // Encontrar a raiz - O(n)
+    int s = 0;
+    for (int i = 1; i < parents.size(); i++) {
+        if (parents[i] == i) {
+            s = i;
+            break;
+        }
+    }
+    if (s == 0) throw std::runtime_error("Árvore parece não ter raiz; ninguém é pai de si próprio");
+
+    // Construir o caminho na ordem contrária. Depois vamos inverter. - O(n)
+    std::vector<int> result = {u};
+    while (u != s) {
+        u = parents[u];
+        result.push_back(u);
+    }
+
+    // Inverter - O(n)
+    std::vector<int> reversed;
+    for (int i = result.size() - 1; 0 <= i; i--) {
+        reversed.push_back(result[i]);
+    }
+
+    return result;
+}
+
 // Métodos de WeightedGraph
 WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
     int n;
@@ -473,29 +527,95 @@ void WeightedGraph::dijkstra(int s, std::vector<double>& dists, std::vector<int>
     }
 
     // Inicialização (O(1))
-    double inf = -1;
+    double inf = std::numeric_limits<double>::infinity();
+    std::vector<bool> explored(n + 1, false);
     dists.assign(n + 1, inf);
+    dists[s] = 0;
     parents.assign(n + 1, -1);
 
-    dists[s] = 0;
-    parents[s] = s;
+    // Dists é atualizado no momento que o vértice entra na heap/ é encontrado por um vizinho. parents é atualizado no momento que o vértice é retirado da heap/ é explorado de vez.
 
+    // Usando Heap - O(n + m log m) = O(n + m log n)
+    // Repare: nesta implementação, o tamanho da Heap é O(m), e não O(n). Porém, O(log m) = O(log (n^2)) = O(2 log n) = O(log n)
     if (!use_vector_only) {
+        // Mais inicialização (O(1))
         // Heap mínima
         std::priority_queue<
-            std::pair<double, int>,
-            std::vector<std::pair<double, int>>,
-            std::greater<std::pair<double, int>>
+            std::tuple<double, int, int>, // dist, vértice e quem encontrou
+            std::vector<std::tuple<double, int, int>>,
+            std::greater<std::tuple<double, int, int>>
         > H;
 
-        H.push(std::make_pair(dists[s], s));
+        H.push(std::make_tuple(0, s, s)); // s se descobriu com distância 0
 
         while (!H.empty()) {
-            std::pair<int, int> p = H.top();
-            H.pop();
-            int u = p.second;
+            std::tuple<double, int, int> t = H.top();
+            H.pop(); // O(m) remoções - complexidade O(m log m) total dessa linha
 
-            // Terminar
+            int u = std::get<1>(t);
+            int parent = std::get<2>(t);
+
+            if (!explored[u]) { // Entramos nesse if O(n) vezes, pois cada vértice é explorado no máximo 1 vez
+                explored[u] = true;
+                parents[u] = parent;
+                std::vector<int> nb = neighbors(u); // Em matriz de adjacências, essa operação é O(n), criando aqui um n^2 que torna a complexidade igual à sem Heap
+
+                for (int i = 0; i < nb.size(); i++) {
+                    int v = nb[i];
+                    double w = weights[u][i];
+                    double ndist = dists[u] + w;
+
+                    if (dists[v] >= ndist) {
+                        dists[v] = ndist;
+                        std::tuple<double, int, int> newt = std::make_tuple(ndist, v, u);
+                        H.push(newt); // O(grau u) inserções na Heap - no total, aqui temos O(m) inserções, com complexidade total O(m log m)
+                    }
+                }
+            }
         }
     }
+
+    // Usando vetor - O(n^2)
+    else {
+        // Mais inicialização - O(n)
+        std::vector<std::pair<double, int>> dist_parent(n + 1);
+        for (int i = 0; i < dist_parent.size(); i++) {
+            dist_parent[i] = std::make_pair(inf, -1);
+        }
+        dist_parent[s] = std::make_pair(0, s); // s se descobriu com distância 0
+
+        while (true) {// O(n) iterações (no pior caso, até todos os vértices serem explorados)
+            int u = nonvis_mindist_idx(dists, explored); // O(n)
+            if (u == -1) break; // Não achou ninguém não-visitado com distância diferente de -1. Parar
+
+            // Olhar os vizinhos - O(grau u)
+            int parent = dist_parent[u].second;
+            explored[u] = true;
+            parents[u] = parent;
+            std::vector<int> nb = neighbors(u);
+
+            for (int i = 0; i < nb.size(); i++) {
+                int v = nb[i];
+                double w = weights[u][i];
+                double ndist = dists[u] + w;
+
+                if (dists[v] >= ndist) {
+                    dists[v] = ndist;
+                    std::pair<double, int> newp = std::make_pair(ndist, u);
+                    
+                    dist_parent[v] = newp;
+                }
+            }
+        }
+    }
+}
+
+double WeightedGraph::dist_weighted(int u, int v) const{
+    int n = get_n();
+    assert(1 <= u && u <= n && 1 <= v && v <= n);
+    std::vector<double> dists;
+    std::vector<int> parents;
+
+    dijkstra(u, dists, parents, false);
+    return dists[v];
 }

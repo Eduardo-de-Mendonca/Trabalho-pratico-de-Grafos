@@ -1,5 +1,14 @@
 #include "Graph.h"
 #include <cassert>
+#include <iostream>
+
+template <typename T>
+void print_vector(const std::vector<T>& v) {
+    for (int i = 0; i < v.size(); i++) {
+        std::cout << v[i] << " ";
+    }
+    std::cout << "\n";
+}
 
 int main() {
     /*
@@ -10,11 +19,22 @@ int main() {
     g2.print();
     */
 
-    WeightedGraph wg1("Grafos/grafo_com_pesos.txt", false);
-    WeightedGraph wg2("Grafos/grafo_com_pesos.txt", true);
+    WeightedGraph wg1("Grafos/grafo_cpesos2.txt", false);
+    //WeightedGraph wg2("Grafos/grafo_cpesos2.txt", true);
 
-    wg1.print();
-    wg2.print();
+    int s = 1;
+    std::vector<double> dists;
+    std::vector<int> parents;
+    wg1.dijkstra(s, dists, parents, false);
+
+    std::cout << "dists:\n";
+    print_vector(dists);
+    std::cout << "parents:\n";
+    print_vector(parents);
+
+    print_vector(wg1.reconstruct_path(parents, 1));
+    print_vector(wg1.reconstruct_path(parents, 2));
+    print_vector(wg1.reconstruct_path(parents, 4));
 
     return 0;
 }
