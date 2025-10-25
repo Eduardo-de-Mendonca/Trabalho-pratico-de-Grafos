@@ -455,7 +455,7 @@ std::vector<int> Graph::reconstruct_path(const std::vector<int>& parents, int u)
         reversed.push_back(result[i]);
     }
 
-    return result;
+    return reversed;
 }
 
 // Métodos de WeightedGraph
@@ -464,18 +464,23 @@ WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
     std::vector<std::pair<int, int>> edges;
     std::vector<double> w;
 
+    std::cout << "Vai construir a representação do grafo\n";
+
     // Ler arquivo e construir a representação O(n + m)
     read_file_info_weighted(filename, n, edges, w);
+    std::cout << "Fez a leitura do arquivo\n";
     if (use_matrix) {
         r = std::make_unique<AdjacencyMatrix>(n, edges);
     } else {
         r = std::make_unique<AdjacencyVector>(n, edges);
     }
+    std::cout << "Fez a representação do grafo\n";
 
     // Construir weights (cuidado para mantê-lo ordenadinho - O(m log m))...
 
     // Construir um vetor de adjacências temporário com pares (v, weight) (O(n + m))
     std::vector<std::vector<std::pair<int, double>>> temp_weights(n + 1, std::vector<std::pair<int, double>>());
+    std::cout << "Criou o vetor temp_weights\n";
     for (int i = 0; i < edges.size(); i++) {
         int u = edges[i].first;
         int v = edges[i].second;
@@ -483,11 +488,13 @@ WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
         temp_weights[u].push_back(std::make_pair(v, weight));
         temp_weights[v].push_back(std::make_pair(u, weight)); // grafo não direcionado
     }
+    std::cout << "Preencheu o vetor temp_weights\n";
 
     // Ordenar com base nos vértices (O(m log m))
     for (int i = 1; i <= n; i++) {
         std::sort(temp_weights[i].begin(), temp_weights[i].end()); // Ordenar com base no primeiro elemento do par (o vértice)
     }
+    std::cout << "Ordenou o vetor temp_weights\n";
 
     // Copiar os pesos na ordem correta (O(n + m))
     weights.assign(n + 1, std::vector<double>());
@@ -496,6 +503,7 @@ WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
             weights[i].push_back(temp_weights[i][j].second);
         }
     }
+    std::cout << "Copiou o vetor temp_weights\n";
 }
 
 void WeightedGraph::print() const {

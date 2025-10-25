@@ -15,7 +15,7 @@ double time_elapsed(std::chrono::steady_clock::time_point start, std::chrono::st
 }
 
 template <typename T>
-void print_vector(std::ofstream& outfile,const std::vector<T>& v) {
+void write_vector(std::ofstream& outfile,const std::vector<T>& v) {
     for (int i = 0; i < v.size(); i++) {
         outfile << v[i] << " ";
     }
@@ -52,15 +52,15 @@ void test_dist_path(const std::string& graph_file, const std::string& filename, 
     
     outfile << "Caminho:\n";
     outfile << "\n";
-    print_vector(outfile,wg1.reconstruct_path(parents, 20));
+    write_vector(outfile,wg1.reconstruct_path(parents, 20));
     std::cout << "\n";
-    print_vector(outfile,wg1.reconstruct_path(parents, 30));
+    write_vector(outfile,wg1.reconstruct_path(parents, 30));
     std::cout << "\n";
-    print_vector(outfile,wg1.reconstruct_path(parents, 40));
+    write_vector(outfile,wg1.reconstruct_path(parents, 40));
     std::cout << "\n";
-    print_vector(outfile,wg1.reconstruct_path(parents, 50));
+    write_vector(outfile,wg1.reconstruct_path(parents, 50));
     std::cout << "\n";
-    print_vector(outfile,wg1.reconstruct_path(parents, 60));
+    write_vector(outfile,wg1.reconstruct_path(parents, 60));
 
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = end - start;
@@ -74,14 +74,49 @@ void test_dist_path(const std::string& graph_file, const std::string& filename, 
     outfile << "\n";
 }
 
-int main() {
-    /*
-    Graph g1("Grafos/grafo_pequeno.txt", false);
-    Graph g2("Grafos/grafo_pequeno.txt", true);
+/**
+Escreve a distância de 10 para 20, 30, 40, 50, 60 em todos os grafos usando vetor de adjacências e heap (mais rápido), sem registrar tempo de execução. 
+*/
+void question_1() {
+    std::vector<std::pair<std::string, std::string>> graphs = {
+        //{"Grafos/Grandes/grafo_W_1.txt", "EstudosDeCaso/Questao1/grafo_1.txt"},
+        //{"Grafos/Grandes/grafo_W_2.txt", "EstudosDeCaso/Questao1/grafo_2.txt"},
+        //{"Grafos/Grandes/grafo_W_3.txt", "EstudosDeCaso/Questao1/grafo_3.txt"},
+        {"Grafos/Grandes/grafo_W_4.txt", "EstudosDeCaso/Questao1/grafo_4.txt"},
+        {"Grafos/Grandes/grafo_W_5.txt", "EstudosDeCaso/Questao1/grafo_5.txt"},
+        {"Grafos/Grandes/grafo_W_6.txt", "EstudosDeCaso/Questao1/grafo_6.txt"},
+    };
 
-    g1.print();
-    g2.print();
-    */
-    test_dist_path("TP2 grafos/grafo_W_4.txt","Estudo de caso(1)/grafo4(Vetor).txt",true);
+    for (auto t : graphs) {
+        std::string infile = t.first;
+        std::string out_filename = t.second;;
+
+        std::ofstream outfile(out_filename);
+        assert(outfile);
+
+        std::cout << "Vai construir o grafo\n";
+        WeightedGraph wg(infile, false);
+        std::cout << "Fez o grafo\n";
+        int s = 10;
+        std::vector<double> dists;
+        std::vector<int> parents;
+
+        wg.dijkstra(s, dists, parents, false);
+
+        outfile << "Distâncias:\n";
+        for (int target : {20, 30, 40, 50, 60}) {
+            outfile << target << ": " << dists[target] << "\n";
+        }
+        
+        outfile << "\nCaminhos:\n";
+        for (int target : {20, 30, 40, 50, 60}) {
+            outfile << target << ": ";
+            write_vector(outfile, wg.reconstruct_path(parents, target));
+        }
+    }
+}
+
+int main() {
+    question_1();
     return 0;
 }
