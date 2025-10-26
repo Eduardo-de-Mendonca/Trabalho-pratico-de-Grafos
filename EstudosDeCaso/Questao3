@@ -1,0 +1,22 @@
+Caminhos a partir de Edsger W. Dijkstra (ID: 2722):
+-------------------------------------------
+Para: Alan M. Turing (ID: 11365)
+Distancia: Infinita (sem caminho)
+Caminho: N/A
+
+Para: J. B. Kruskal (ID: 471365)
+Distancia: 3.48037
+Caminho: J. B. Kruskal -> Albert G. Greenberg -> R. Srikant -> Ness B. Shroff -> Edwin K. P. Chong -> Howard Jay Siegel -> Dan C. Marinescu -> John R. Rice -> Edsger W. Dijkstra
+
+Para: Jon M. Kleinberg (ID: 5709)
+Distancia: 2.70699
+Caminho: Jon M. Kleinberg -> Prabhakar Raghavan -> Eli Upfal -> Avi Wigderson -> Prabhakar Ragde -> Dimitrios M. Thilikos -> Hans L. Bodlaender -> Gerard Tel -> A. J. M. van Gasteren -> Edsger W. Dijkstra
+
+Para: Éva Tardos (ID: 11386)
+Distancia: 2.75351
+Caminho: Éva Tardos -> Serge A. Plotkin -> Andrew V. Goldberg -> Robert Endre Tarjan -> Haim Kaplan -> Micha Sharir -> Mark H. Overmars -> Jan van Leeuwen -> Hans L. Bodlaender -> Gerard Tel -> A. J. M. van Gasteren -> Edsger W. Dijkstra
+
+Para: Daniel R. Figueiredo (ID: 343930)
+Distancia: 2.94283
+Caminho: Daniel R. Figueiredo -> Donald F. Towsley -> Zhi-Li Zhang -> Y. Thomas Hou -> Bo Li -> Chuang Lin -> Dan C. Marinescu -> John R. Rice -> Edsger W. Dijkstra
+
