@@ -6,7 +6,7 @@
 
 class GraphRepresentation {
 public:
-    // Destrutor virtual vazio, para ser possível deletar uma classe filha a partir de um ponteiro para GraphReoresentaion.
+    // Destrutor virtual vazio, para ser possível deletar uma classe filha a partir de um ponteiro para GraphRepresentaion.
     virtual ~GraphRepresentation() = default;
 
     /**
@@ -45,6 +45,15 @@ public:
     AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges);
 
     /**
+    Recebe o vetor de adjacências já pronto.
+    
+    O(1)
+    */
+    explicit AdjacencyVector(std::vector<std::vector<int>>&& adj_vector) {
+        vec = std::move(adj_vector);
+    }
+
+    /**
     Retorna o número de vértices.
 
     O(1)
@@ -77,7 +86,7 @@ public:
     O(n^2)
     */
     AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges);
-
+    
     /**
     Retorna o número de vértices.
 

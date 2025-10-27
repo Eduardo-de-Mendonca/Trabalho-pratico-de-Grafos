@@ -75,6 +75,32 @@ namespace{
     }
 
     /**
+    Lê o arquivo filename (representando um grafo com peso) e escreve em temp_weights um vetor de adjacências com pares (v, weight), ordenados de acordo com v.
+
+    O(n + m log m)
+    */
+    void build_weighted_adjacency_vector(const std::string& filename, int& n, std::vector<std::vector<std::pair<int, double>>>& w_adj_vector) {
+        std::ifstream infile(filename);
+        assert(infile);
+        
+        infile >> n;
+        assert(n >= 1);
+
+        w_adj_vector.assign(n + 1, std::vector<std::pair<int, double>>());
+        int u, v;
+        double w;
+        while (infile >> u >> v >> w) {
+            w_adj_vector[u].push_back(std::make_pair(v, w));
+            w_adj_vector[v].push_back(std::make_pair(u, w)); // grafo não direcionado
+        }
+
+        // Ordenar com base nos vértices (O(m log m))
+        for (int i = 1; i <= n; i++) {
+            std::sort(w_adj_vector[i].begin(), w_adj_vector[i].end()); // Ordenar com base no primeiro elemento do par (o vértice)
+        }
+    }
+
+    /**
     Olhando a partir da posição 1, retorna o índice da menor distância dentre os elementos que não foram visitados e cuja distância não é infinita. "double inf = -1" é considerado como distância infinita. Se ninguém for encontrado, retorna -1.
 
     O(n)
@@ -461,49 +487,37 @@ std::vector<int> Graph::reconstruct_path(const std::vector<int>& parents, int u)
 // Métodos de WeightedGraph
 WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
     int n;
-    std::vector<std::pair<int, int>> edges;
-    std::vector<double> w;
+    std::vector<std::vector<std::pair<int, double>>> temp_weights;
 
-    std::cout << "Vai construir a representação do grafo\n";
-
-    // Ler arquivo e construir a representação O(n + m)
-    read_file_info_weighted(filename, n, edges, w);
-    std::cout << "Fez a leitura do arquivo\n";
-    if (use_matrix) {
-        r = std::make_unique<AdjacencyMatrix>(n, edges);
-    } else {
-        r = std::make_unique<AdjacencyVector>(n, edges);
-    }
-    std::cout << "Fez a representação do grafo\n";
-
-    // Construir weights (cuidado para mantê-lo ordenadinho - O(m log m))...
-
-    // Construir um vetor de adjacências temporário com pares (v, weight) (O(n + m))
-    std::vector<std::vector<std::pair<int, double>>> temp_weights(n + 1, std::vector<std::pair<int, double>>());
-    std::cout << "Criou o vetor temp_weights\n";
-    for (int i = 0; i < edges.size(); i++) {
-        int u = edges[i].first;
-        int v = edges[i].second;
-        double weight = w[i];
-        temp_weights[u].push_back(std::make_pair(v, weight));
-        temp_weights[v].push_back(std::make_pair(u, weight)); // grafo não direcionado
-    }
-    std::cout << "Preencheu o vetor temp_weights\n";
-
-    // Ordenar com base nos vértices (O(m log m))
-    for (int i = 1; i <= n; i++) {
-        std::sort(temp_weights[i].begin(), temp_weights[i].end()); // Ordenar com base no primeiro elemento do par (o vértice)
-    }
-    std::cout << "Ordenou o vetor temp_weights\n";
+    std::cout << "Declarou temp_weights\n";
+    // O(n + m log m)
+    build_weighted_adjacency_vector(filename, n, temp_weights);
+    std::cout << "Preencheu temp_weights\n";
 
     // Copiar os pesos na ordem correta (O(n + m))
     weights.assign(n + 1, std::vector<double>());
+    std::vector<std::vector<int>> adj_vector(n + 1, std::vector<int>());
+    std::cout << "Declarou weights e adj_vector\n";
     for (int i = 1; i <= n; i++) {
         for (int j = 0; j < temp_weights[i].size(); j++) {
+            adj_vector[i].push_back(temp_weights[i][j].first);
             weights[i].push_back(temp_weights[i][j].second);
         }
+
+        // Destruir a linha para liberar memória
+        temp_weights[i].clear();
+        temp_weights[i].shrink_to_fit();
+
+        std::cout << "Destruiu a linha " << i << "/" << n << "\n";
     }
-    std::cout << "Copiou o vetor temp_weights\n";
+    std::cout << "Preencheu weights e adj_vector\n";
+    
+    if (!use_matrix) {
+        r = std::make_unique<AdjacencyVector>(std::move(adj_vector));
+    } else {
+        // Preciso escrever o construtor novo para matriz
+        throw std::runtime_error("Construção de grafo ponderado com matriz de adjacências não implementada");
+    }
 }
 
 void WeightedGraph::print() const {

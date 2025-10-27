@@ -118,5 +118,8 @@ void question_1() {
 
 int main() {
     question_1();
+
+    //WeightedGraph wg("Grafos/Grandes/grafo_W_4.txt", false);
+    //wg.print();
     return 0;
 }

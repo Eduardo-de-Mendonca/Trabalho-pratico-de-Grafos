@@ -1,0 +1,28 @@
+Para rodar o run.bat, é necessário baixar um compilador de 64 bits. Instruções de como baixei o meu...
+
+https://docs.docker.com/desktop/setup/install/windows-install/
+    Neste site, baixei o instalador Docker Desktop for Windows - x86_64
+    Rodei o instalador, e segui as instruções
+
+https://github.com/skeeto/w64devkit
+    Neste site, baixei o repositório inteiro como ZIP. Depois, extraí tudo.
+
+No gerenciador de arquivos, fui até a pasta em que foi tudo extraído, e abri um CMD
+    (para fazer isso, basta clicar no endereço da pasta no topo da janela, digitar cmd e dar enter)
+
+    Rodei:
+    docker build -t w64devkit .
+    Demorou mais ou menos uma hora.
+    Depois, rodei:
+    docker run --rm w64devkit >w64devkit-x64.exe
+    Rodou rapidão.
+
+Depois, voltei para a pasta em que tudo foi extraído e cliquei no w64devkit-x64
+    Segui as instruções para extrair ele.
+    Ele criou a pasta w64devkit no lugar onde eu selecionei
+
+Depois, fui nas variáveis de ambiente do sistema (a partir das configurações) e adicionei o path para w64devkit/bin
+    Tem que adicionar o path completo, que vai depender de onde você colocou
+
+Naturalmente, é bom deletar o path para o compilador antigo, e até mesmo desinstalá-lo
+    Se você tentar rodar run.bat com um compilador que só faz 32 bits, ele vai dar um erro do tipo "sorry, unimplemented", dizendo que o modo de 64 bits (o qual exigimos com a flag -m64) não está implementado.
