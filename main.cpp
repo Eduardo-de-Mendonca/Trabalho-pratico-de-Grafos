@@ -82,9 +82,8 @@ void question_1() {
         //{"Grafos/Grandes/grafo_W_1.txt", "EstudosDeCaso/Questao1/grafo_1.txt"},
         //{"Grafos/Grandes/grafo_W_2.txt", "EstudosDeCaso/Questao1/grafo_2.txt"},
         //{"Grafos/Grandes/grafo_W_3.txt", "EstudosDeCaso/Questao1/grafo_3.txt"},
-        {"Grafos/Grandes/grafo_W_4.txt", "EstudosDeCaso/Questao1/grafo_4.txt"},
+        //{"Grafos/Grandes/grafo_W_4.txt", "EstudosDeCaso/Questao1/grafo_4.txt"},
         {"Grafos/Grandes/grafo_W_5.txt", "EstudosDeCaso/Questao1/grafo_5.txt"},
-        {"Grafos/Grandes/grafo_W_6.txt", "EstudosDeCaso/Questao1/grafo_6.txt"},
     };
 
     for (auto t : graphs) {
@@ -186,7 +185,7 @@ void question_2() {
 }
 
 int main() {
-    question_2();
+    question_1();
 
     return 0;
 }
