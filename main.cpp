@@ -4,6 +4,7 @@
 #include <limits>
 #include <chrono>
 #include <fstream>
+#include <random>
 
 auto time_now() {
     return std::chrono::steady_clock::now();
@@ -115,10 +116,77 @@ void question_1() {
     }
 }
 
-int main() {
-    //question_1();
+void test_performance_dijkstra(const std::string& graph_file, const std::string& filename, bool use_vector_only) {
+    std::ofstream outfile(filename);
+    assert(outfile);
+    int no_optimization = 0;
 
-    WeightedGraph wg("Grafos/grafo_com_pesos.txt", true);
-    wg.print();
+    WeightedGraph wg(graph_file, false);
+
+    int n = wg.get_n();
+    std::vector<double> dists(n + 1);
+    std::vector<int> parents(n + 1);
+    double duration, avg;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, n);
+    std::vector<int> random_starts;
+    for (int i = 0; i < 100; i++) {
+        random_starts.push_back(dis(gen));
+    }
+
+    outfile << "100 Dikstra(use_vector_only=" << (use_vector_only ? "true" : "false") << ")\n";
+    outfile << "Vértices de início: ";
+    for (int s : random_starts) {
+        outfile << s << " ";
+    }
+    outfile << "\n";
+
+    auto start = time_now();
+    for (int s : random_starts) {
+        wg.dijkstra(s, dists, parents, use_vector_only);
+        no_optimization += static_cast<int>(dists[1]); // Só para garantir que ele não otimize a chamada
+    }
+    auto end = time_now();
+
+    duration = time_elapsed(start, end);
+    avg = duration/100;
+
+    outfile << "\nDuração total das 100 chamadas: " << duration << " segundos\n";
+    outfile << "Média por Dijkstra: " << avg << " segundos\n";
+    outfile << "\n";
+
+    std::cout << no_optimization << "\n";
+}
+
+void question_2() {
+    std::vector<std::tuple<std::string, std::string, bool>> graphs = {
+        {"Grafos/Grandes/grafo_W_1.txt", "EstudosDeCaso/Questao2/grafo_1_heap.txt", false},
+        {"Grafos/Grandes/grafo_W_2.txt", "EstudosDeCaso/Questao2/grafo_2_heap.txt", false},
+        {"Grafos/Grandes/grafo_W_3.txt", "EstudosDeCaso/Questao2/grafo_3_heap.txt", false},
+        {"Grafos/Grandes/grafo_W_4.txt", "EstudosDeCaso/Questao2/grafo_4_heap.txt", false},
+        {"Grafos/Grandes/grafo_W_5.txt", "EstudosDeCaso/Questao2/grafo_5_heap.txt", false},
+
+        {"Grafos/Grandes/grafo_W_1.txt", "EstudosDeCaso/Questao2/grafo_1_vector_only.txt", true},        
+        {"Grafos/Grandes/grafo_W_2.txt", "EstudosDeCaso/Questao2/grafo_2_vector_only.txt", true},
+        {"Grafos/Grandes/grafo_W_3.txt", "EstudosDeCaso/Questao2/grafo_3_vector_only.txt", true},
+        {"Grafos/Grandes/grafo_W_4.txt", "EstudosDeCaso/Questao2/grafo_4_vector_only.txt", true},
+        {"Grafos/Grandes/grafo_W_5.txt", "EstudosDeCaso/Questao2/grafo_5_vector_only.txt", true},
+        
+    };
+
+    for (auto t : graphs) {
+        std::string infile = std::get<0>(t);
+        std::string outfile = std::get<1>(t);
+        bool vector_only = std::get<2>(t);
+
+        test_performance_dijkstra(infile, outfile, vector_only);
+    }
+}
+
+int main() {
+    question_2();
+
     return 0;
 }

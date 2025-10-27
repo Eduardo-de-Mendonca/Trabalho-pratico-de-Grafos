@@ -485,18 +485,17 @@ std::vector<int> Graph::reconstruct_path(const std::vector<int>& parents, int u)
 
 // Métodos de WeightedGraph
 WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
+    std::cout << "Começando a construir o WeightedGraph\n";
+
     int n;
     std::vector<std::vector<std::pair<int, double>>> temp_weights;
 
-    std::cout << "Declarou temp_weights\n";
     // O(n + m log m)
     build_weighted_adjacency_vector(filename, n, temp_weights);
-    std::cout << "Preencheu temp_weights\n";
 
     // Copiar os pesos na ordem correta (O(n + m))
     weights.assign(n + 1, std::vector<double>());
     std::vector<std::vector<int>> adj_vector(n + 1, std::vector<int>());
-    std::cout << "Declarou weights e adj_vector\n";
     for (int i = 1; i <= n; i++) {
         for (int j = 0; j < temp_weights[i].size(); j++) {
             adj_vector[i].push_back(temp_weights[i][j].first);
@@ -511,13 +510,14 @@ WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
             std::cout << "Destruiu a linha " << i << "/" << n << "\n";
         }
     }
-    std::cout << "Preencheu weights e adj_vector\n";
     
     if (!use_matrix) {
         r = std::make_unique<AdjacencyVector>(std::move(adj_vector));
     } else {
         r = std::make_unique<AdjacencyMatrix>(std::move(adj_vector));
     }
+
+    std::cout << "Terminou de construir o WeightedGraph\n";
 }
 
 void WeightedGraph::print() const {
