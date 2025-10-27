@@ -1,0 +1,6 @@
+1 Dikstra(use_vector_only=true)
+Vértices de início: 919950 
+
+Duração total das 1 chamadas: 3191.21 segundos
+Média por Dijkstra: 3191.21 segundos
+

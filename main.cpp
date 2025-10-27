@@ -169,7 +169,7 @@ void question_2() {
 
         //{"Grafos/Grandes/grafo_W_1.txt", "EstudosDeCaso/Questao2/grafo_1_vector_only.txt", true, 100},        
         //{"Grafos/Grandes/grafo_W_2.txt", "EstudosDeCaso/Questao2/grafo_2_vector_only.txt", true, 100},
-        {"Grafos/Grandes/grafo_W_3.txt", "EstudosDeCaso/Questao2/grafo_3_vector_only.txt", true, 20},
+        {"Grafos/Grandes/grafo_W_3.txt", "EstudosDeCaso/Questao2/new_grafo_3_vector_only.txt", true, 100},
         {"Grafos/Grandes/grafo_W_4.txt", "EstudosDeCaso/Questao2/grafo_4_vector_only.txt", true, 1},
         {"Grafos/Grandes/grafo_W_5.txt", "EstudosDeCaso/Questao2/grafo_5_vector_only.txt", true, 1},
         
