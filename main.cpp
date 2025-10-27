@@ -5,7 +5,6 @@
 #include <chrono>
 #include <fstream>
 
-
 auto time_now() {
     return std::chrono::steady_clock::now();
 }
@@ -117,9 +116,9 @@ void question_1() {
 }
 
 int main() {
-    question_1();
+    //question_1();
 
-    //WeightedGraph wg("Grafos/Grandes/grafo_W_4.txt", false);
-    //wg.print();
+    WeightedGraph wg("Grafos/grafo_com_pesos.txt", true);
+    wg.print();
     return 0;
 }

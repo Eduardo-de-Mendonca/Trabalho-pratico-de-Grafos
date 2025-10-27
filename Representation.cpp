@@ -61,6 +61,20 @@ AdjacencyMatrix::AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& 
     }
 }
 
+AdjacencyMatrix::AdjacencyMatrix(std::vector<std::vector<int>>&& adj_vector) {
+    // Destruir adj_vector para ter comportamento consistente com o construtor de AdjacencyVector
+    std::vector<std::vector<int>> lvector = std::move(adj_vector);
+
+    int n = lvector.size() - 1;
+    mat.assign(n + 1, std::vector<bool>(n + 1, false)); // O(n^2)
+
+    for (int u = 1; u <= n; u++) {
+        for (int v : lvector[u]) {
+            mat[u][v] = true;
+        }
+    }
+}
+
 int AdjacencyMatrix::get_n() const {
     return mat.size() - 1;
 }

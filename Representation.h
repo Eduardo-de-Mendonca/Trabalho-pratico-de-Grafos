@@ -88,6 +88,13 @@ public:
     AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges);
     
     /**
+    Recebe um vetor de adjacências já pronto, e cria a partir dele a matriz de adjacências. Útil no construtor de grafo com peso.
+    
+    O(n^2)
+    */
+    explicit AdjacencyMatrix(std::vector<std::vector<int>>&& adj_vector);
+
+    /**
     Retorna o número de vértices.
 
     O(1)

@@ -391,7 +391,6 @@ int Graph::diameter() const {
     int n = get_n();
     for (int u = 1; u <= n; u++) {
         bfs(u, dists, parents);
-        std::cout << "Fez bfs " << u <<"/" << n << "\n";
 
         int new_max = max_dist(dists);
         if (new_max == -1) return -1; // Grafo desconexo.
@@ -508,22 +507,23 @@ WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
         temp_weights[i].clear();
         temp_weights[i].shrink_to_fit();
 
-        std::cout << "Destruiu a linha " << i << "/" << n << "\n";
+        if (i % 100'000 == 0) {
+            std::cout << "Destruiu a linha " << i << "/" << n << "\n";
+        }
     }
     std::cout << "Preencheu weights e adj_vector\n";
     
     if (!use_matrix) {
         r = std::make_unique<AdjacencyVector>(std::move(adj_vector));
     } else {
-        // Preciso escrever o construtor novo para matriz
-        throw std::runtime_error("Construção de grafo ponderado com matriz de adjacências não implementada");
+        r = std::make_unique<AdjacencyMatrix>(std::move(adj_vector));
     }
 }
 
 void WeightedGraph::print() const {
     int n = get_n();
     std::cout << "Vértices: " << n << "\n";
-    std::cout << "Vetor de adjacências com pesos:\n";
+    std::cout << "Vetor de adjacências com pesos (internamente, pode ser vetor ou matriz):\n";
     for (int u = 1; u <= n; u++) {
         std::vector<int> nb = neighbors(u);
         std::cout << u << ": ";
