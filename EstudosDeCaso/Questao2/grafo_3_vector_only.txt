@@ -1,0 +1,6 @@
+20 Dikstra(use_vector_only=true)
+Vértices de início: 48971 55430 44294 83669 22678 56686 56051 60494 55420 64698 2882 94125 88887 11456 31292 79218 75794 49629 70979 53446 
+
+Duração total das 20 chamadas: 612.298 segundos
+Média por Dijkstra: 30.6149 segundos
+

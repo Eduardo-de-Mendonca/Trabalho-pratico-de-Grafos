@@ -1,0 +1,29 @@
+Estrutura da biblioteca:
+    Houve mudanças na parte 1, e foi adicionada a classe WeightedGraph...
+
+    GraphRepresentation: classe base abstrata
+    AdjacencyVector: herda de GraphRepresentation
+    AdjacencyMatrix: herda de GraphRepresentation
+    Graph: tem um atributo GraphRepresentation
+
+    WeightedGraph: herda de Graph
+
+    A vantagem de WeightedGraph herdar de Graph é que temos basicamente todas as mesmas funcionalidades. Por exemplo, o grafo com peso também pode ser representado como vetor de adjacências e matriz de adjacências, a despeito de todos os testes de desempenho terem sido feitos com vetor de adjacências
+
+Como representamos os pesos?
+    Lembrando que os vizinhos são percorridos a partir do método neighbors(int v), que retorna um std::vector<int> com todos os vizinhos de v em ordem crescente de índice.
+
+    Logo, colocamos em WeightedGraph um atributo std::vector<std::vector<double>> weights, tal que weights[v][i] é o peso da aresta que vai de v para seu i-ésimo vizinho (começando no zerézimo), em ordem crescente de índice. Assim, weights[v][i] dá o peso da aresta de v para neighbors(v)[i].
+
+    Para construir isso, no construtor de Weighted graph, lemos o grafo no formato de um std::vector<std::vector<<std::pair<int, double>>> temp_weights, tal que temp_weights[v][i].first é o i-ésimo vizinho de v, e temp_weights[v][i].second é o peso da aresta de v para seu i-ésimo vizinho.
+    Depois, ordenamos cada temp_weights[v]. Ordenação de pares, em C++, ordena de acordo com o primeiro elemento, então essa ordenação é feita de acordo com o índice do vértice, conforme desejamos.
+    Depois, os dados são simplesmente copiados para a GraphRepresentation e para weights.
+
+Problemas de memória
+    Essa lógica do construtor, inicialmente, chegava a guardar simultaneamente três cópias do grafo (uma em um vetor edges, gerado a partir da leitura do arquivo, outra em temp_weights, e outra na representação do grafo e em weights), o que estourava a memória do processo (dando bad_alloc) no grafo 4.
+    Otimizamos bastante, de forma a ler diretamente do arquivo para temp_weights e desalocar as linhas de temp_weights conforme são copiadas, mas isso ainda não resolveu o problema.
+
+    Quando baixamos um compilador para 64 bits, o problema foi resolvido.
+
+Problemas de tempo:
+    Conseguimos rodar 100 Dijkstra em todos os grafos com Heap. Sem Heap, porém, só conseguimos rodar 20 Dijkstra no grafo 3. No grafo 4 em diante, sem Heap, não rodamos Dijkstra.
