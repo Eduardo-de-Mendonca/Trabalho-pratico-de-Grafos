@@ -26,4 +26,4 @@ Problemas de memória
     Quando baixamos um compilador para 64 bits, o problema foi resolvido.
 
 Problemas de tempo:
-    Conseguimos rodar 100 Dijkstra em todos os grafos com Heap. Sem Heap, porém, só conseguimos rodar 20 Dijkstra no grafo 3. No grafo 4 em diante, sem Heap, não rodamos Dijkstra.
+    Conseguimos rodar 100 Dijkstra em todos os grafos com heap. Sem heap, porém, só conseguimos rodar 1 Dijkstra no grafo 4. No grafo 5, sem heap, não rodamos Dijkstra.
