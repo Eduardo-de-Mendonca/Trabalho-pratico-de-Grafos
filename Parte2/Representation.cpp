@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cassert>
 
-AdjacencyVector::AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges, bool is_undirected) {
+AdjacencyVector::AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges) {
     assert(n >= 1);
 
     vec.assign(n + 1, std::vector<int>()); // Operação O(n)
@@ -15,10 +15,7 @@ AdjacencyVector::AdjacencyVector(int n, const std::vector<std::pair<int, int>>& 
         int u = edge.first;
         int v = edge.second;
         vec[u].push_back(v);
-
-        if (is_undirected) {
-            vec[v].push_back(u); // grafo não direcionado
-        }
+        vec[v].push_back(u); // grafo não direcionado
     }
 
     // Operação O(m log m) para vetores de adjacências
@@ -49,11 +46,10 @@ void AdjacencyVector::print() const {
     }
 }
 
-AdjacencyMatrix::AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges, bool is_undirected) {
+AdjacencyMatrix::AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges) {
     assert(n >= 1);
 
     mat.assign(n + 1, std::vector<bool>(n + 1, false)); // Operação O(n^2)
-
     // Deixaremos a primeira posição de tudo vazia, pois os vértices começam em 1
 
     // Operações O(m)
@@ -61,9 +57,7 @@ AdjacencyMatrix::AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& 
         int u = edge.first;
         int v = edge.second;
         mat[u][v] = true;
-        if (is_undirected) {
-            mat[v][u] = true; // grafo não direcionado
-        }
+        mat[v][u] = true; // grafo não direcionado
     }
 }
 

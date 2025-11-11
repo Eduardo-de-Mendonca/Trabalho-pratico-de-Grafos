@@ -42,7 +42,7 @@ public:
     
     O(n + m log m)
     */
-    AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges, bool is_undirected);
+    AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges);
 
     /**
     Recebe o vetor de adjacências já pronto.
@@ -85,7 +85,7 @@ public:
 
     O(n^2)
     */
-    AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges, bool is_undirected);
+    AdjacencyMatrix(int n, const std::vector<std::pair<int, int>>& edges);
     
     /**
     Recebe um vetor de adjacências já pronto, e cria a partir dele a matriz de adjacências. Útil no construtor de grafo com peso.

@@ -183,14 +183,14 @@ std::vector<std::vector<int>> Graph::connected_components_unsorted() const {
 }
 
 // Métodos públicos
-Graph::Graph(const std::string& filename, bool is_undirected, bool use_matrix) {
+Graph::Graph(const std::string& filename, bool use_matrix) {
     int n;
     std::vector<std::pair<int, int>> edges;
     read_file_info(filename, n, edges);
     if (use_matrix) {
-        r = std::make_unique<AdjacencyMatrix>(n, edges, is_undirected);
+        r = std::make_unique<AdjacencyMatrix>(n, edges);
     } else {
-        r = std::make_unique<AdjacencyVector>(n, edges, is_undirected);
+        r = std::make_unique<AdjacencyVector>(n, edges);
     }
 }
 

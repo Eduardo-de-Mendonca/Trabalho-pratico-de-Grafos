@@ -34,7 +34,7 @@ private:
     /**
     Retorna um vector<int> resultante com n + 1 entradas. A entrada 0 é -1. resultante[v] é a componente conexa do vértice v (a primeira componente conexa é 0, e assim por diante). Os índices das componentes conexas não seguem nenhuma ordem em particular.
 
-    Vetores de adjacências: O(n + m)
+    Vetores de adjacências: O((n + m))
     Matriz de adjacências: O(n^2) 
     */
     std::vector<int> connected_component_vector() const;
@@ -54,7 +54,7 @@ public:
     Vetores de adjacências: O(n + m log m)
     Matriz de adjacências: O(n^2)
     */
-    Graph(const std::string& filename, bool is_undirected, bool use_matrix);
+    Graph(const std::string& filename, bool use_matrix);
 
     /**
     Imprime o grafo no console.
