@@ -45,7 +45,7 @@ public:
     AdjacencyVector(int n, const std::vector<std::pair<int, int>>& edges, bool is_undirected);
 
     /**
-    Recebe o vetor de adjacências já pronto.
+    Recebe o vetor de adjacências já pronto. Ele deve estar ordenado!!
     
     O(1)
     */

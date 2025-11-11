@@ -266,6 +266,59 @@ void Graph::write_output(const std::string& filename) const {
     }
 }
 
+Graph Graph::reverse(bool use_matrix) const {
+    int n = get_n();
+
+    std::unique_ptr<GraphRepresentation> repr;
+    // Construir a representação de grafo reverso
+    if (use_matrix) {
+        // Construir o vetor edges
+        std::vector<std::pair<int, int>> edges;
+        for (int v = 1; v <= n; v++) {
+            std::vector<int> nb = neighbors(v);
+            for (int u : nb) {
+                std::pair<int, int> np = {u, v};
+                edges.push_back(np);
+            }
+        }
+
+        repr = std::make_unique<AdjacencyMatrix>(n, edges, false);
+        
+    } else {
+        // Construir o vetor de adjacências do grafo reverso, ordenado
+        std::vector<std::vector<int>> adj_vector(n + 1);
+        for (int v = 1; v <= n; v++) {
+            std::vector<int> nb = neighbors(v);
+            for (int u : nb) {
+                adj_vector[u].push_back(v);
+            }
+        }
+
+        repr = std::make_unique<AdjacencyVector>(std::move(adj_vector));
+    }
+
+    Graph result(std::move(repr));
+    return result;
+}
+
+bool Graph::is_equal(const Graph& g) const {
+    int n = get_n();
+    if (n != g.get_n()) return false;
+
+    for (int v = 1; v <= n; v++) {
+        std::vector<int> nb = neighbors(v);
+        std::vector<int> nb_g = g.neighbors(v);
+
+        int gv = nb.size();
+        if (gv != nb_g.size()) return false;
+        for (int i = 0; i < gv; i++) {
+            if (nb[i] != nb_g[i]) return false;
+        }
+    }
+
+    return true;
+}
+
 void Graph::bfs(int s, std::vector<int>& levels, std::vector<int>& parents) const {
     int n = get_n();
     assert(1 <= s && s <= n); // Garantir que temos um vértice válido

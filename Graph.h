@@ -23,6 +23,14 @@ protected:
 
 private:
 
+    /**
+    Recebe a representação de grafo já pronta.
+
+    O(1)
+    */
+    Graph(std::unique_ptr<GraphRepresentation>&& repr) {
+        r = std::move(repr);
+    }
     
     /**
     Retorna o máximo do vetor dists, com a exceção de que -1 é considerado maior que todos os outros inteiros (como se representasse infinito). Poderia ser uma função simples, já que não acessa nenhum atributo do grafo.
@@ -49,7 +57,7 @@ private:
 
 public:
     /**
-    Constrói o grafo. A quantidade de vértices deve ser 1 ou mais. O grafo é sempre tratado como não direcionado. Não pode haver duplicatas nas arestas (não pode haver (1,2) e (2,1), nem pode haver (1,2) duas vezes).
+    Constrói o grafo. A quantidade de vértices deve ser 1 ou mais.
     Ordena os vetores de adjacências, para oferecer as ordens de busca corretas.
     Vetores de adjacências: O(n + m log m)
     Matriz de adjacências: O(n^2)
@@ -73,6 +81,33 @@ public:
     Matriz de adjacências: O(n^2)
     */
     void write_output(const std::string& filename) const;
+
+    /**
+    Retorna o grafo reverso.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    Graph reverse(bool use_matrix) const;
+
+    /**
+    Retorna true <-> os grafos são iguais.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    bool is_equal(const Graph& g) const;
+
+    /**
+    Retorna true <-> o grafo é não-direcionado.
+    Não nos lembramos do parâmetro is_undirected do construtor. Apenas verificamos se toda aresta tem seu complementar no grafo. Por isso, grafos que representam problemas direcionados podem vir a ser não-direcionados (esse é o comportamento desejado).
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    bool is_undirected() const {
+        return is_equal(reverse(false));
+    }
 
     /**
     Altera os vetores dists e parents com informações acerca da bfs a partir do vértice s. No vetor dists, -1 significa "não visitado".
