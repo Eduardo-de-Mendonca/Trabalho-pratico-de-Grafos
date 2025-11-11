@@ -143,6 +143,8 @@ int Graph::max_dist(const std::vector<int>& dists) const {
 }
 
 std::vector<int> Graph::connected_component_vector() const {
+    if (!is_undirected()) throw std::runtime_error("Método não implementado para grafos direcionados.");
+    
     int n = get_n();
     std::vector<int> result(n + 1, -1);
 

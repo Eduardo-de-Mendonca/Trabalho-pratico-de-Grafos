@@ -150,7 +150,8 @@ public:
     void write_dfs(int s, const std::string& filename) const;
 
     /**
-    Retorna a distância no grafo entre u e v. Caso não estejam conectados, retorna -1.
+    Retorna a distância no grafo de u para v. Caso não estejam conectados, retorna -1. Repare que, em um grafo direcionado, dist(u, v) pode ser diferente de dist(v, u).
+
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2) 
     */
