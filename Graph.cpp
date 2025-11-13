@@ -79,7 +79,7 @@ namespace{
 
     O(n + m log m)
     */
-    void build_weighted_adjacency_vector(const std::string& filename, int& n, std::vector<std::vector<std::pair<int, double>>>& w_adj_vector) {
+    void build_weighted_adjacency_vector(const std::string& filename, bool force_undirected, int& n, std::vector<std::vector<std::pair<int, double>>>& w_adj_vector) {
         std::ifstream infile(filename);
         assert(infile);
         
@@ -91,7 +91,9 @@ namespace{
         double w;
         while (infile >> u >> v >> w) {
             w_adj_vector[u].push_back(std::make_pair(v, w));
-            w_adj_vector[v].push_back(std::make_pair(u, w)); // grafo não direcionado
+            if (force_undirected) {
+                w_adj_vector[v].push_back(std::make_pair(u, w)); // grafo não direcionado
+            }
         }
 
         // Ordenar com base nos vértices (O(m log m))
@@ -539,14 +541,14 @@ std::vector<int> Graph::reconstruct_path(const std::vector<int>& parents, int u)
 }
 
 // Métodos de WeightedGraph
-WeightedGraph::WeightedGraph(const std::string& filename, bool use_matrix) {
+WeightedGraph::WeightedGraph(const std::string& filename, bool force_undirected, bool use_matrix) {
     std::cout << "Começando a construir o WeightedGraph\n";
 
     int n;
     std::vector<std::vector<std::pair<int, double>>> temp_weights;
 
     // O(n + m log m)
-    build_weighted_adjacency_vector(filename, n, temp_weights);
+    build_weighted_adjacency_vector(filename, force_undirected, n, temp_weights);
 
     // Copiar os pesos na ordem correta (O(n + m))
     weights.assign(n + 1, std::vector<double>());

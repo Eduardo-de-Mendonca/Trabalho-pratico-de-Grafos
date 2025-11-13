@@ -62,7 +62,7 @@ public:
     Vetores de adjacências: O(n + m log m)
     Matriz de adjacências: O(n^2)
     */
-    Graph(const std::string& filename, bool is_undirected, bool use_matrix);
+    Graph(const std::string& filename, bool force_undirected, bool use_matrix);
 
     /**
     Imprime o grafo no console.
@@ -100,7 +100,7 @@ public:
 
     /**
     Retorna true <-> o grafo é não-direcionado.
-    Não nos lembramos do parâmetro is_undirected do construtor. Apenas verificamos se toda aresta tem seu complementar no grafo. Por isso, grafos que representam problemas direcionados podem vir a ser não-direcionados (esse é o comportamento desejado).
+    Não nos lembramos do parâmetro force_undirected do construtor. Apenas verificamos se toda aresta tem seu complementar no grafo. Por isso, grafos que representam problemas direcionados podem vir a ser não-direcionados (esse é o comportamento desejado).
 
     Vetores de adjacências: O(n + m)
     Matriz de adjacências: O(n^2)
@@ -220,7 +220,7 @@ public:
     O(n + m log m) com vetor de adjacências
     O(n^2) com matriz de adjacências
     */
-    WeightedGraph(const std::string& filename, bool use_matrix);
+    WeightedGraph(const std::string& filename, bool force_undirected, bool use_matrix);
 
     /**
     Imprime o grafo no console. Imprime sempre no formato de um vetor de adjacências, independetemente de como está internamente representado.
