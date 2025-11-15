@@ -231,6 +231,14 @@ public:
     void print() const override;
 
     /**
+    Retorna true se, e somente se, o grafo tem algum peso negativo.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n + m)
+    */
+    bool has_negative_weight() const;
+
+    /**
     Altera os vetores dists e parents com informações acerca do algoritmo de Dijkstra a partir do vértice s. No vetor dists, std::numeric_limits<double>::infinity() significa não visitado..
 
     s deve ser um vértice válido.
@@ -245,10 +253,24 @@ public:
     void dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const; 
 
     /**
+    Altera os vetores dists e parents com informações acerca do algoritmo de Bellman-Ford tendo como DESTINO fixo o vértice t. No vetor dists, std::numeric_limits<double>::infinity() significa não visitado. Levanta um erro caso haja um ciclo negativo.
+
+    t deve ser um vértice válido.
+
+    Vetores de adjacências: O(n m)
+    Matriz de adjacências: O(n^3)
+    */ 
+    void bellman_ford(int t, std::vector<double>& dists, std::vector<int>& parents) const;
+
+    /**
     Retorna a distância no grafo entre u e v. Caso não estejam conectados, retorna std::numeric_limits<double>::infinity().
 
-    Vetores de adjacências: O(n + m log n)
-    Matriz de adjacências: O(n^2) 
+    Vetores de adjacências:
+        Se não houver peso negativo (dijkstra): O(n + m log n)
+        Se houver peso negativo (bellman_ford): O(n m)
+    Matriz de adjacências:
+        Se não houver peso negativo (dijkstra): O(n^2)
+        Se houver peso negativo (bellman_ford): O(n^3)
     */
     double dist_weighted(int u, int v) const;
 

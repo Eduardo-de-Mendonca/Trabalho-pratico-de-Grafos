@@ -593,18 +593,29 @@ void WeightedGraph::print() const {
     }
 }
 
-void WeightedGraph::dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const {
+bool WeightedGraph::has_negative_weight() const {
     int n = get_n();
-    assert(1 <= s && s <= n);
 
     // Ver se há pesos negativos - O(n + m)
     for (int u = 1; u <= n; u++) {
         for (int i = 0; i < weights[u].size(); i++) {
             double w = weights[u][i];
-            if (w < 0) throw std::runtime_error("Encontrou um peso negativo durante a execução do algoritmo de Dijkstra");
+            if (w < 0) return true;
         }
     }
 
+    return false;
+}
+
+void WeightedGraph::dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const {
+    int n = get_n();
+    assert(1 <= s && s <= n);
+
+    // Ver se há pesos negativos - O(n + m)
+    if (has_negative_weight()) {
+        throw std::runtime_error("Encontrou um peso negativo durante a execução do algoritmo de Dijkstra");
+    }
+    
     // Inicialização (O(1))
     double inf = std::numeric_limits<double>::infinity();
     std::vector<bool> explored(n + 1, false);
@@ -689,12 +700,22 @@ void WeightedGraph::dijkstra(int s, std::vector<double>& dists, std::vector<int>
     }
 }
 
+void WeightedGraph::bellman_ford(int t, std::vector<double>& dists, std::vector<int>& parents) const {
+    throw std::runtime_error("Método não implementado");
+}
+
 double WeightedGraph::dist_weighted(int u, int v) const{
     int n = get_n();
     assert(1 <= u && u <= n && 1 <= v && v <= n);
     std::vector<double> dists;
     std::vector<int> parents;
-
-    dijkstra(u, dists, parents, false);
-    return dists[v];
+    if (!has_negative_weight()) {
+        dijkstra(u, dists, parents, false);
+        return dists[v];
+    }
+    else {
+        // Bellman-Ford
+        bellman_ford(v, dists, parents);
+        return dists[u];
+    }
 }
