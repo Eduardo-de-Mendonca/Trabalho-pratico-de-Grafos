@@ -1,0 +1,8 @@
+Coisas a melhorar na biblioteca
+    Não precisamos fazer todas elas. Possivelmente não precisamos fazer nenhuma, na verdade. Mas é bom documentar o que pode ser melhorado.
+
+Dijkstra, quando chamado a partir de dist_weighted, checa pesos negativos duas vezes
+    A solução mais elegante é ter um Dijkstra privado que não checa, e um Dijkstra público que checa e chama o Dijkstra privado. Aí, dist_weighted faz a checagem por fora e chama só o Dijkstra privado
+
+Parece que o lançamento de erro com throw não está escrevendo a string que passamos como parâmetro no console.
+    Entender o porquê, e resolver. Possivelmente precisaremos dar um cout antes do throw
