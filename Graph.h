@@ -212,6 +212,8 @@ private:
     */
     std::vector<std::vector<double>> weights;
 
+    WeightedGraph() = default;
+
 public:
     /**
     Constrói o grafo. A quantidade de vértices deve ser 1 ou mais. O grafo é sempre tratado como não direcionado. Não pode haver duplicatas nas arestas (não pode haver (1,2) e (2,1), nem pode haver (1,2) duas vezes).
@@ -229,6 +231,14 @@ public:
     Matriz de adjacências: O(n^2)
     */
     void print() const override;
+
+    /**
+    Retorna o grafo reverso com peso.
+
+    Vetores de adjacências: O(n + m)
+    Matriz de adjacências: O(n^2)
+    */
+    WeightedGraph reverse(bool use_matrix) const;
 
     /**
     Retorna true se, e somente se, o grafo tem algum peso negativo.

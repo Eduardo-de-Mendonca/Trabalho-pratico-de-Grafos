@@ -1,0 +1,15 @@
+Grafo 1
+has_negative_weight(): 1
+
+Grafo 2
+has_negative_weight(): 0
+
+Grafo 3
+has_negative_weight(): 0
+
+Grafo 4
+has_negative_weight(): 0
+
+Grafo 5
+has_negative_weight(): 0
+

@@ -593,6 +593,56 @@ void WeightedGraph::print() const {
     }
 }
 
+WeightedGraph WeightedGraph::reverse(bool use_matrix) const {
+    int n = get_n();
+
+    std::unique_ptr<GraphRepresentation> repr;
+    // Construir a representação de grafo reverso
+    if (use_matrix) {
+        // Construir o vetor edges
+        std::vector<std::pair<int, int>> edges;
+        for (int v = 1; v <= n; v++) {
+            std::vector<int> nb = neighbors(v);
+            for (int i = 0; i < nb.size(); i++) {
+                int u = nb[i];
+                std::pair<int, int> np = {u, v};
+                edges.push_back(np);
+            }
+        }
+
+        repr = std::make_unique<AdjacencyMatrix>(n, edges, false);
+        
+    } else {
+        // Construir o vetor de adjacências do grafo reverso, ordenado
+        std::vector<std::vector<int>> adj_vector(n + 1);
+        for (int v = 1; v <= n; v++) {
+            std::vector<int> nb = neighbors(v);
+            for (int i = 0; i < nb.size(); i++) {
+                int u = nb[i];
+                adj_vector[u].push_back(v);
+            }
+        }
+
+        repr = std::make_unique<AdjacencyVector>(std::move(adj_vector));
+    }
+
+    // Construir os pesos do grafo reverso
+    std::vector<std::vector<double>> rev_weights(n + 1, std::vector<double>());
+    for (int u = 1; u <= n; u++) {
+        std::vector<int> nb = neighbors(u);
+        for (int i = 0; i < nb.size(); i++) {
+            int v = nb[i];
+            double w = weights[u][i];
+            rev_weights[v].push_back(w);
+        }
+    }
+
+    WeightedGraph result;
+    result.r = std::move(repr);
+    result.weights = std::move(rev_weights);
+    return result;
+}
+
 bool WeightedGraph::has_negative_weight() const {
     int n = get_n();
 
@@ -705,8 +755,8 @@ void WeightedGraph::bellman_ford(int t, std::vector<double>& dists, std::vector<
 
     dists.assign(n + 1, std::numeric_limits<double>::infinity());
     dists[t] = 0;
-    parents[t] = t;
     parents.assign(n + 1, -1);
+    parents[t] = t;
 
     /**
     Faz um ciclo de atualização. Retorna true <-> algo mudou 
