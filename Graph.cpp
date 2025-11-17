@@ -701,7 +701,46 @@ void WeightedGraph::dijkstra(int s, std::vector<double>& dists, std::vector<int>
 }
 
 void WeightedGraph::bellman_ford(int t, std::vector<double>& dists, std::vector<int>& parents) const {
-    throw std::runtime_error("Método não implementado");
+    int n = get_n();
+
+    dists.assign(n + 1, std::numeric_limits<double>::infinity());
+    dists[t] = 0;
+    parents[t] = t;
+    parents.assign(n + 1, -1);
+
+    /**
+    Faz um ciclo de atualização. Retorna true <-> algo mudou 
+    */
+    auto update = [&]() {
+        bool updated = false;
+        for (int v = 1; v <= n; v++) {
+            std::vector<int> nb = neighbors(v);
+            for (int j = 0; j < nb.size(); j++) {
+                int w = nb[j];
+                double c_vw = weights[v][j];
+                double cur = dists[w] + c_vw;
+
+                if (cur < dists[v]) {
+                    parents[v] = w;
+                    dists[v] = cur;
+                    updated = true;
+                }
+            }
+        }
+
+        return updated;
+    };
+
+    for (int i = 1; i <= n - 1; i++) {
+        bool updated = update();
+        if (!updated) return;
+    }
+
+    // Rodar mais uma atualização para ver se há ciclo negativo
+    bool updated = update();
+    if (updated) {
+        throw std::runtime_error("Ciclo negativo encontrado.");
+    }    
 }
 
 double WeightedGraph::dist_weighted(int u, int v) const{

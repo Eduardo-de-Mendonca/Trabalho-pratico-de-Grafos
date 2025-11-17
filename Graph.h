@@ -253,7 +253,11 @@ public:
     void dijkstra(int s, std::vector<double>& dists, std::vector<int>& parents, bool use_vector_only) const; 
 
     /**
-    Altera os vetores dists e parents com informações acerca do algoritmo de Bellman-Ford tendo como DESTINO fixo o vértice t. No vetor dists, std::numeric_limits<double>::infinity() significa não visitado. Levanta um erro caso haja um ciclo negativo.
+    Altera os vetores dists e parents com informações acerca do algoritmo de Bellman-Ford tendo como DESTINO fixo o vértice t.
+    
+    No vetor dists, std::numeric_limits<double>::infinity() significa não visitado. No vetor parents, -1 significa não visitado, e parents[t] = t;
+    
+    Lança um erro caso haja um ciclo negativo. Nesse caso, nada garantimos sobre o que restará em dists e parents.
 
     t deve ser um vértice válido.
 
