@@ -1,0 +1,3 @@
+24201 13641 13223 5124 4726 10411 8883 6986 22494 4169 
+Duração total das 10 chamadas: 0.895693 segundos
+Média por Bellman-Ford: 0.0895693 segundos

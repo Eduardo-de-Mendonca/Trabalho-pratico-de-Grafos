@@ -1,0 +1,3 @@
+83821 38915 29416 4265 79452 96536 93364 51120 3903 42661 
+Duração total das 10 chamadas: 6.0556 segundos
+Média por Bellman-Ford: 0.60556 segundos

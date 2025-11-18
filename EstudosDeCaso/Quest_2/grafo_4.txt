@@ -1,0 +1,3 @@
+921013 542202 766587 81353 501200 19682 383079 243400 769876 474727 
+Duração total das 10 chamadas: 76.4493 segundos
+Média por Bellman-Ford: 7.64493 segundos

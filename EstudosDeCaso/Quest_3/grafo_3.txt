@@ -1,0 +1,7 @@
+
+Duração total das 10 chamadas: 1.31462 segundos
+Média por Dyjkstra: 0.131462 segundos
+Distâncias:
+10: 3.05
+20: 3.11
+30: 3.2

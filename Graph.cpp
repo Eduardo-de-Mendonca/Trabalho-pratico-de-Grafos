@@ -595,7 +595,6 @@ void WeightedGraph::print() const {
 
 WeightedGraph WeightedGraph::reverse(bool use_matrix) const {
     int n = get_n();
-
     std::unique_ptr<GraphRepresentation> repr;
     // Construir a representação de grafo reverso
     if (use_matrix) {
@@ -609,10 +608,9 @@ WeightedGraph WeightedGraph::reverse(bool use_matrix) const {
                 edges.push_back(np);
             }
         }
-
         repr = std::make_unique<AdjacencyMatrix>(n, edges, false);
-        
-    } else {
+    } 
+    else {
         // Construir o vetor de adjacências do grafo reverso, ordenado
         std::vector<std::vector<int>> adj_vector(n + 1);
         for (int v = 1; v <= n; v++) {
@@ -622,7 +620,6 @@ WeightedGraph WeightedGraph::reverse(bool use_matrix) const {
                 adj_vector[u].push_back(v);
             }
         }
-
         repr = std::make_unique<AdjacencyVector>(std::move(adj_vector));
     }
 
@@ -636,7 +633,6 @@ WeightedGraph WeightedGraph::reverse(bool use_matrix) const {
             rev_weights[v].push_back(w);
         }
     }
-
     WeightedGraph result;
     result.r = std::move(repr);
     result.weights = std::move(rev_weights);

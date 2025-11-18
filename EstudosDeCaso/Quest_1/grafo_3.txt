@@ -1,0 +1,5 @@
+Distâncias:
+10: 4.63
+20: 5.42
+30: 4.67
+Tempo: 1.63953 segundos
