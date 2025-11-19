@@ -596,43 +596,57 @@ void WeightedGraph::print() const {
 WeightedGraph WeightedGraph::reverse(bool use_matrix) const {
     int n = get_n();
     std::unique_ptr<GraphRepresentation> repr;
-    // Construir a representação de grafo reverso
-    if (use_matrix) {
-        // Construir o vetor edges
-        std::vector<std::pair<int, int>> edges;
-        for (int v = 1; v <= n; v++) {
-            std::vector<int> nb = neighbors(v);
-            for (int i = 0; i < nb.size(); i++) {
-                int u = nb[i];
-                std::pair<int, int> np = {u, v};
-                edges.push_back(np);
-            }
-        }
-        repr = std::make_unique<AdjacencyMatrix>(n, edges, false);
-    } 
-    else {
-        // Construir o vetor de adjacências do grafo reverso, ordenado
-        std::vector<std::vector<int>> adj_vector(n + 1);
-        for (int v = 1; v <= n; v++) {
-            std::vector<int> nb = neighbors(v);
-            for (int i = 0; i < nb.size(); i++) {
-                int u = nb[i];
-                adj_vector[u].push_back(v);
-            }
-        }
-        repr = std::make_unique<AdjacencyVector>(std::move(adj_vector));
-    }
 
-    // Construir os pesos do grafo reverso
-    std::vector<std::vector<double>> rev_weights(n + 1, std::vector<double>());
-    for (int u = 1; u <= n; u++) {
+    // 1. Estrutura temporária para coletar e ordenar as arestas invertidas com seus pesos.
+    // rev_adj_weighted[v] conterá pares {u, w} para todas as arestas (u -> v) no G original.
+    std::vector<std::vector<std::pair<int, double>>> rev_adj_weighted(n + 1);
+
+    // I. Inversão e Coleta de Pesos (O(n + m))
+    for (int u = 1; u <= n; u++) { 
         std::vector<int> nb = neighbors(u);
+        
+        // Percorre as arestas (u -> v) no grafo original
         for (int i = 0; i < nb.size(); i++) {
             int v = nb[i];
             double w = weights[u][i];
-            rev_weights[v].push_back(w);
+            
+            // Inversão: (u -> v, w) em G vira (v -> u, w) em G^R.
+            rev_adj_weighted[v].push_back({u, w}); // Adiciona (novo vizinho, peso) à lista do novo nó de origem (v)
         }
     }
+
+    // II. Ordenação dos Vizinhos (Crucial) (O(m log m))
+    // Ordenar garante que o vizinho (o primeiro elemento do par) e o peso correspondente 
+    // estarão na mesma ordem que o construtor do AdjacencyVector/Matrix espera.
+    for (int i = 1; i <= n; i++) {
+        // Ordena com base no vértice (primeiro elemento do par)
+        std::sort(rev_adj_weighted[i].begin(), rev_adj_weighted[i].end()); 
+    }
+    
+    // III. Separação das Listas (Vizinhos e Pesos) (O(n + m))
+    std::vector<std::vector<double>> rev_weights(n + 1, std::vector<double>());
+    std::vector<std::vector<int>> rev_adj_vector(n + 1, std::vector<int>());
+
+    for (int i = 1; i <= n; i++) {
+        for (const auto& pair : rev_adj_weighted[i]) {
+            rev_adj_vector[i].push_back(pair.first);  // Vizinho (já ordenado)
+            rev_weights[i].push_back(pair.second); // Peso (sincronizado com o vizinho)
+        }
+    }
+
+    // IV. Criação do Objeto de Representação
+    if (!use_matrix) {
+        // Assume-se que AdjacencyVector pode receber o vetor de adjacências ordenado
+        repr = std::make_unique<AdjacencyVector>(std::move(rev_adj_vector));
+    } else {
+        // Para a matriz, você deve usar o construtor que aceita o vetor de adjacências
+        // ou, se for um construtor baseado em lista de arestas, reconstruir a lista 'edges' 
+        // a partir de 'rev_adj_weighted'.
+        // Assumindo que você tem um construtor que aceita o vetor de adjacências:
+        repr = std::make_unique<AdjacencyMatrix>(std::move(rev_adj_vector)); 
+    }
+
+    // V. Retorno do Objeto WeightedGraph Revertido
     WeightedGraph result;
     result.r = std::move(repr);
     result.weights = std::move(rev_weights);

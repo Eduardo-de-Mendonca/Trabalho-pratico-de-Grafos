@@ -153,7 +153,7 @@ void Quest_2() {
 
 void Quest_3() {
     std::vector<std::pair<std::string, std::string>> graphs = {
-        {"Grafos 3/grafo_W_2.txt", "EstudosDeCaso/Quest_3//grafo_2.txt"},
+        {"Grafos 3/grafo_W_2.txt", "EstudosDeCaso/Quest_3/grafo_2.txt"},
         {"Grafos 3/grafo_W_3.txt", "EstudosDeCaso/Quest_3/grafo_3.txt"},
         {"Grafos 3/grafo_W_4.txt", "EstudosDeCaso/Quest_3/grafo_4.txt"},
         {"Grafos 3/grafo_W_5.txt", "EstudosDeCaso/Quest_3/grafo_5.txt"},
@@ -228,6 +228,6 @@ void Quest_3_Comp() {
 
 
 int main() {
-    Quest_1();
+    Quest_3();
     return 0;
 }

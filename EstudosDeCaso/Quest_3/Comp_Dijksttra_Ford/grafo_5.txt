@@ -2,4 +2,4 @@ Distâncias:
 10: 37.85
 20: 42.63
 30: 37.86
-Tempo: 23.2339 segundos
+Tempo: 11.9199 segundos
